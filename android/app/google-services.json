@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "849967201601",
+    "project_id": "clicks-outlet",
+    "storage_bucket": "clicks-outlet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849967201601:android:da837d99178714a84535c0",
+        "android_client_info": {
+          "package_name": "com.example.async.it.clicksoutlet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849967201601-o1d3itikaodqrqjc8i1q13g0ldj0hi82.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcmvQ_NecyxCbDd_PA3pVghn2TpXx_1T4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849967201601-o1d3itikaodqrqjc8i1q13g0ldj0hi82.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
