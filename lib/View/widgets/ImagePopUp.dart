@@ -12,7 +12,7 @@ class ImageDialog extends StatelessWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           return Container(
             width: constraints.maxWidth,
-            height: MediaQuery.sizeOf(context).height*0.50,
+            height: MediaQuery.sizeOf(context).height*0.70,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(

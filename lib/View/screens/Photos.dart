@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:clicksoutlet/View/widgets/MySearchBar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-
 class PhotosScrn extends StatelessWidget {
   const PhotosScrn({Key? key}) : super(key: key);
 
