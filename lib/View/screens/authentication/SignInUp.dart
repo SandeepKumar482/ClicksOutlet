@@ -28,10 +28,12 @@ class _SignInUpState extends State<SignInUp>
     if (user != null) {
       // The user is logged in
       try {
-        Get.to(Home());
-        Future.delayed(const Duration(milliseconds: 10), () {
-          Navigator.of(context, rootNavigator: true).pop();
-        });
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            //settings: RouteSettings(name: OtherPage.routeName),
+            builder: (context) => Home(),
+          ),
+        );
       } catch (e) {}
 
       print('User is signed in!');
@@ -146,6 +148,9 @@ class _SignInUpState extends State<SignInUp>
                     child: ElevatedButton(
                       onPressed: () {
                         // TODO: Implement continue as guest here
+                        try {
+                          Get.off(Home());
+                        } catch (e) {}
                       },
                       child: Text('Continue as Guest'),
                       style: ElevatedButton.styleFrom(
