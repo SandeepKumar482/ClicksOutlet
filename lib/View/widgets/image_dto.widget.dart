@@ -6,12 +6,12 @@ class ImageDTO extends StatelessWidget {
   // final String username; // the username of the image uploader
 
   // constructor to initialize the fields
-  ImageDTO({required this.imageUrl});
+  const ImageDTO({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return FittedBox(
-      fit:BoxFit.cover,
+      fit: BoxFit.cover,
       child: Stack(
         children: [
           Image.network(imageUrl),

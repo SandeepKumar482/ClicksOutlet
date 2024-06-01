@@ -1,16 +1,17 @@
-import 'package:clicksoutlet/View/screens/Home.dart';
-import 'package:clicksoutlet/View/screens/authentication/OtpScreen.dart';
-import 'package:clicksoutlet/View/widgets/CustomAppBar.dart';
-import 'package:clicksoutlet/utils/Utils.dart';
+import 'package:clicksoutlet/View/screens/home.view.dart';
+import 'package:clicksoutlet/View/screens/authentication/otp.view.dart';
+import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
+import 'package:clicksoutlet/constants/style.dart';
+import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../constants/ColorsConst.dart';
-
 class SignInUp extends StatefulWidget {
+  const SignInUp({super.key});
+
   @override
-  _SignInUpState createState() => _SignInUpState();
+  State<SignInUp> createState() => _SignInUpState();
 }
 
 class _SignInUpState extends State<SignInUp>
@@ -31,7 +32,7 @@ class _SignInUpState extends State<SignInUp>
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             //settings: RouteSettings(name: OtherPage.routeName),
-            builder: (context) => Home(),
+            builder: (context) => const Home(),
           ),
         );
       } catch (e) {}
@@ -65,7 +66,7 @@ class _SignInUpState extends State<SignInUp>
       body: Center(
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: Offset(-1.0, 0.0),
+            begin: const Offset(-1.0, 0.0),
             end: Offset.zero,
           ).animate(
             CurvedAnimation(
@@ -76,16 +77,16 @@ class _SignInUpState extends State<SignInUp>
           child: Form(
             key: _formKey,
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: deviceWidth * 0.9, // 80% of device width
                     child: TextFormField(
                       decoration: Utils.buildInputDecoration(
                           "Enter your phone number", Icons.phone),
-                      style: TextStyle(color: ColorsConst.third),
+                      style: const TextStyle(color: ColorsConst.third),
                       cursorColor: ColorsConst.primary,
                       validator: (value) {
                         if (value!.isEmpty || value.length != 10) {
@@ -100,7 +101,7 @@ class _SignInUpState extends State<SignInUp>
                   ),
                   SizedBox(height: deviceHeight * 0.02),
                   // 2% of device height
-                  Container(
+                  SizedBox(
                     width: deviceWidth * 0.65, // 60% of device width
                     child: ElevatedButton(
                       onPressed: () async {
@@ -108,9 +109,9 @@ class _SignInUpState extends State<SignInUp>
                           _formKey.currentState!.save();
                           // TODO: Implement phone number authentication here
                           try {
-                            final FirebaseAuth _auth = FirebaseAuth.instance;
-                            await _auth.verifyPhoneNumber(
-                              phoneNumber: '+91' + _phoneNumber,
+                            final FirebaseAuth auth = FirebaseAuth.instance;
+                            await auth.verifyPhoneNumber(
+                              phoneNumber: '+91$_phoneNumber',
                               verificationCompleted:
                                   (PhoneAuthCredential credential) {},
                               verificationFailed: (FirebaseAuthException e) {},
@@ -129,34 +130,27 @@ class _SignInUpState extends State<SignInUp>
                           }
                         }
                       },
-                      child: Text('Submit'),
-                      style: ElevatedButton.styleFrom(
-                        primary: ColorsConst.primary,
-                        onPrimary: ColorsConst.third,
-                      ),
+                      child: const Text('Submit'),
+                      style: ElevatedButton.styleFrom(),
                     ),
                   ),
                   SizedBox(
                       height: deviceHeight * 0.02,
-                      child: Text(
+                      child: const Text(
                         'OR',
                         style: TextStyle(color: ColorsConst.third),
                       )),
                   // 2% of device height
-                  Container(
+                  SizedBox(
                     width: deviceWidth * 0.55, // 60% of device width
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO: Implement continue as guest here
                         try {
-                          Get.off(Home());
+                          Get.off(const Home());
                         } catch (e) {}
                       },
-                      child: Text('Continue as Guest'),
-                      style: ElevatedButton.styleFrom(
-                        primary: ColorsConst.fourth,
-                        onPrimary: ColorsConst.secondary,
-                      ),
+                      style: ElevatedButton.styleFrom(),
+                      child: const Text('Continue as Guest'),
                     ),
                   ),
                 ],
