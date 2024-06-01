@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/View/screens/authentication/signup.view.dart';
+import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
 import 'package:clicksoutlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.green,
       ),
-      home: const SignInUp(),
+      home: UserDetailsForm(),
     );
   }
 }

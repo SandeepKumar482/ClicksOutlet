@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/View/screens/home.view.dart';
+import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
 import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicksoutlet/View/widgets/otp_input.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
@@ -86,7 +86,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   });
                   Utils.getSnacbar(
                       "Authentication Status", "Authenticated!!!!!!!");
-                  Get.off(const Home());
+                  Get.off(UserDetailsForm());
                 },
                 style: ElevatedButton.styleFrom(),
                 child: _isLoading

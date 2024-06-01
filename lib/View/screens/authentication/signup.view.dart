@@ -1,5 +1,5 @@
-import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/View/screens/authentication/otp.view.dart';
+import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
 import 'package:clicksoutlet/utils/utils.dart';
@@ -58,7 +58,7 @@ class _SignInUpState extends State<SignInUp>
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: ColorsConst.primary,
-        title: CustomAppBar(
+        title: const CustomAppBar(
           word1: "Clicks",
           word2: "Outlet",
         ),
@@ -107,7 +107,6 @@ class _SignInUpState extends State<SignInUp>
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          // TODO: Implement phone number authentication here
                           try {
                             final FirebaseAuth auth = FirebaseAuth.instance;
                             await auth.verifyPhoneNumber(
@@ -131,17 +130,20 @@ class _SignInUpState extends State<SignInUp>
                         }
                       },
                       child: const Text('Submit'),
-                      style: ElevatedButton.styleFrom(),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: ColorsConst.secondary,
+                        primary: ColorsConst.fourth,
+                      ),
                     ),
-                  ),
-                  SizedBox(
+                  )
+                  /*SizedBox(
                       height: deviceHeight * 0.02,
                       child: const Text(
                         'OR',
                         style: TextStyle(color: ColorsConst.third),
-                      )),
+                      )),*/
                   // 2% of device height
-                  SizedBox(
+                  /* SizedBox(
                     width: deviceWidth * 0.55, // 60% of device width
                     child: ElevatedButton(
                       onPressed: () {
@@ -149,10 +151,13 @@ class _SignInUpState extends State<SignInUp>
                           Get.off(const Home());
                         } catch (e) {}
                       },
-                      style: ElevatedButton.styleFrom(),
-                      child: const Text('Continue as Guest'),
+                      child: Text('Continue as Guest'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: ColorsConst.secondary,
+                        primary: ColorsConst.fourth,
+                      ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
