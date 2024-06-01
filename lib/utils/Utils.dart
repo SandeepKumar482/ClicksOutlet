@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/constants/ColorsConst.dart';
+import 'package:clicksoutlet/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +9,7 @@ class Utils {
       message: message,
       snackPosition: SnackPosition.BOTTOM,
       snackStyle: SnackStyle.FLOATING,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       backgroundColor: ColorsConst.fourth,
     ));
   }

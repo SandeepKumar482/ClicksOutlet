@@ -1,8 +1,8 @@
-import 'package:clicksoutlet/View/widgets/CustomAppBar.dart';
+import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/Constants.dart';
+import '../../constants/constants.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
           centerTitle: true,
           elevation: 0.0,
           backgroundColor: Colors.white,
-          title: CustomAppBar(
+          title: const CustomAppBar(
             word1: "Clicks",
             word2: "Outlet",
           ),

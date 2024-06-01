@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {
   final String imageUrl;
-  ImageDialog({required this.imageUrl});
-  
+  const ImageDialog({super.key, required this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -12,7 +11,7 @@ class ImageDialog extends StatelessWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           return Container(
             width: constraints.maxWidth,
-            height: MediaQuery.sizeOf(context).height*0.70,
+            height: MediaQuery.sizeOf(context).height * 0.70,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(
@@ -24,35 +23,33 @@ class ImageDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  
-                 decoration: BoxDecoration(
-                  color: Colors.amber[100],
-                  borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(15),
-                bottomRight: Radius.circular(15)),
-                 ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber[100],
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15)),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                       IconButton(
-                        icon: Icon(Icons.favorite_border),
+                      IconButton(
+                        icon: const Icon(Icons.favorite_border),
                         onPressed: () {
                           // Add your like logic here.
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.download),
+                        icon: const Icon(Icons.download),
                         onPressed: () {
                           // Add your download logic here.
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.share),
+                        icon: const Icon(Icons.share),
                         onPressed: () {
                           // Add your share logic here.
                         },
                       ),
-                     
                     ],
                   ),
                 ),

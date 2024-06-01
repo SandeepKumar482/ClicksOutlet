@@ -1,12 +1,10 @@
-import 'package:clicksoutlet/View/screens/AddPhoto.dart';
-import 'package:clicksoutlet/View/screens/Photos.dart';
+import 'package:clicksoutlet/View/screens/add_photo.view.dart';
+import 'package:clicksoutlet/View/screens/photo.view.dart';
 import 'package:flutter/material.dart';
 
-var page=[
-  PhotosScrn(),
-  AddPhoto(),
-  Text('Liked Photos'),
-  Text('My Uploads')
-
-
+var page = [
+  const PhotosScrn(),
+  const AddPhoto(),
+  const Text('Liked Photos'),
+  const Text('My Uploads')
 ];

@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/View/screens/authentication/SignInUp.dart';
+import 'package:clicksoutlet/View/screens/authentication/signup.view.dart';
 import 'package:clicksoutlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,16 +13,6 @@ Future<void> main() async {
 
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   //_createNotificationChannel(id, name, description)
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
   runApp(const MyApp());
 }
 
@@ -42,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.green,
       ),
-      home: SignInUp(),
+      home: const SignInUp(),
     );
   }
 }

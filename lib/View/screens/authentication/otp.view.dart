@@ -1,20 +1,19 @@
-import 'package:clicksoutlet/View/screens/Home.dart';
-import 'package:clicksoutlet/View/widgets/CustomAppBar.dart';
-import 'package:clicksoutlet/View/widgets/OtpInput.dart';
-import 'package:clicksoutlet/utils/Utils.dart';
+import 'package:clicksoutlet/View/screens/home.view.dart';
+import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
+import 'package:clicksoutlet/View/widgets/otp_input.widget.dart';
+import 'package:clicksoutlet/constants/style.dart';
+import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../constants/ColorsConst.dart';
-
 class OtpScreen extends StatefulWidget {
   final String verificationId;
 
-  OtpScreen(this.verificationId);
+  const OtpScreen(this.verificationId, {super.key});
 
   @override
-  _OtpScreenState createState() => _OtpScreenState();
+  State<OtpScreen> createState() => _OtpScreenState();
 }
 
 void authenticate() {}
@@ -24,12 +23,12 @@ class _OtpScreenState extends State<OtpScreen> {
   final _otpController = TextEditingController();
   bool _isLoading = false;
 
-  TextEditingController _fieldOne = TextEditingController();
-  TextEditingController _fieldTwo = TextEditingController();
-  TextEditingController _fieldThree = TextEditingController();
-  TextEditingController _fieldFour = TextEditingController();
-  TextEditingController _fieldFive = TextEditingController();
-  TextEditingController _fieldSix = TextEditingController();
+  final TextEditingController _fieldOne = TextEditingController();
+  final TextEditingController _fieldTwo = TextEditingController();
+  final TextEditingController _fieldThree = TextEditingController();
+  final TextEditingController _fieldFour = TextEditingController();
+  final TextEditingController _fieldFive = TextEditingController();
+  final TextEditingController _fieldSix = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class _OtpScreenState extends State<OtpScreen> {
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: ColorsConst.primary,
-        title: CustomAppBar(
+        title: const CustomAppBar(
           word1: "Clicks",
           word2: "Outlet",
         ),
@@ -64,7 +63,7 @@ class _OtpScreenState extends State<OtpScreen> {
             SizedBox(
               height: deviceHeight * 0.05,
             ),
-            Container(
+            SizedBox(
               width: deviceWidth * 0.65, // 60% of device width
               child: ElevatedButton(
                 onPressed: () async {
@@ -78,25 +77,21 @@ class _OtpScreenState extends State<OtpScreen> {
                       _fieldFour.text +
                       _fieldFive.text +
                       _fieldSix.text;
-                  PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                  PhoneAuthProvider.credential(
                     verificationId: widget.verificationId,
                     smsCode: _otpController.text,
                   );
-                  UserCredential userCredential = await FirebaseAuth.instance
-                      .signInWithCredential(credential);
                   setState(() {
                     _isLoading = false;
                   });
                   Utils.getSnacbar(
                       "Authentication Status", "Authenticated!!!!!!!");
-                  Get.off(Home());
+                  Get.off(const Home());
                 },
-                child:
-                    _isLoading ? CircularProgressIndicator() : Text('Submit'),
-                style: ElevatedButton.styleFrom(
-                  primary: ColorsConst.primary,
-                  onPrimary: ColorsConst.third,
-                ),
+                style: ElevatedButton.styleFrom(),
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Submit'),
               ),
             ),
           ],
