@@ -161,11 +161,15 @@ class _MyUploadsState extends State<MyUploads> {
                                 final String imageUrl =
                                     await snapshotEvents.ref.getDownloadURL();
 
+                                UserDetailsModel userData =
+                                    UserDetailsModel.fromSP();
                                 ImageModel imageModel = ImageModel(
-                                    userId: UserDetailsModel.fromSP().id,
-                                    url: imageUrl,
-                                    caption: caption.text,
-                                    tags: [tags.text]);
+                                  userId: userData.id,
+                                  userName: userData.name,
+                                  url: imageUrl,
+                                  caption: caption.text,
+                                  tags: [tags.text],
+                                );
 
                                 bool isUploaded = await ImageCollectionService()
                                     .addImage(imageModel);
