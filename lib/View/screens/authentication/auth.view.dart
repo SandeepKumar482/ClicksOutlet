@@ -1,4 +1,5 @@
 import 'package:clicksoutlet/FirebaseService/google_auth.service.dart';
+import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
@@ -48,14 +49,15 @@ class _AuthState extends State<Auth> {
                   profilePicture: user.photoURL,
                 );
 
-                bool isSetToSP = await userDetailsModel.setToSP();
+                bool isSetToFB = await UserCollectionService()
+                    .addUpdateData(userDetailsModel);
 
                 FloatingMsg.show(
                   context: context,
-                  msg: isSetToSP
+                  msg: isSetToFB
                       ? "Sign IN Successfully"
                       : "Failed to Authenticatye",
-                  msgType: isSetToSP ? MsgType.success : MsgType.error,
+                  msgType: isSetToFB ? MsgType.success : MsgType.error,
                 );
               }
               Get.back();

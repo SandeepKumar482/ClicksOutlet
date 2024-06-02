@@ -1,6 +1,7 @@
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class UserCollectionService {
   final collectionReference =
@@ -10,13 +11,13 @@ class UserCollectionService {
     try {
       collectionReference.snapshots();
       await collectionReference
-          .doc(userDetailsModel.userName)
+          .doc(userDetailsModel.id)
           .set(userDetailsModel.toMap());
-      print(
+      debugPrint(
           '#####################################Data Added Successfully#####################################');
-      return true;
+      return userDetailsModel.setToSP();
     } catch (e) {
-      print(
+      debugPrint(
           "#####################################Operation Failed#############################################");
     }
     return false;
