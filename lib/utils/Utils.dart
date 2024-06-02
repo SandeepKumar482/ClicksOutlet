@@ -14,6 +14,10 @@ class Utils {
     ));
   }
 
+  static String? generateUserName({required String? username}) {
+    return username?.split('@')[0].replaceAll(RegExp(r'[^\w\s]+'), '_');
+  }
+
   static InputDecoration buildInputDecoration(String label, IconData iconData) {
     return InputDecoration(
       labelText: label,

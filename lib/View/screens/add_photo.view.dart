@@ -26,12 +26,6 @@ class AddPhoto extends StatelessWidget {
                       size: 50,
                     )),
                     onPressed: () async {
-                      /*var status = await Permission.photos.status;
-                  print(status);
-                  if (status.isDenied) {
-                    // You can request the permission here
-                    status = await Permission.photos.request();
-                  }*/
                       try {
                         Get.to(() => const ImageUploadScrn());
                       } catch (e) {

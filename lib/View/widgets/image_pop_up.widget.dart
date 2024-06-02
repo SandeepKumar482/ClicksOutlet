@@ -1,7 +1,8 @@
+import 'package:clicksoutlet/main.dart';
 import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl;
   const ImageDialog({super.key, required this.imageUrl});
 
   @override
@@ -15,7 +16,7 @@ class ImageDialog extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(
-                image: NetworkImage(imageUrl),
+                image: NetworkImage(imageUrl ?? config.imagePreviewUrl),
                 fit: BoxFit.cover,
               ),
             ),

@@ -1,9 +1,16 @@
-import 'package:clicksoutlet/View/screens/authentication/signup.view.dart';
+import 'package:clicksoutlet/View/screens/home.view.dart';
+import 'package:clicksoutlet/config/config.dart';
 import 'package:clicksoutlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+final Config config = Config(
+  userCollection: 'Dev Users',
+  imageFolder: 'Dev',
+  imageCollection: 'Dev Images',
+);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +39,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.green,
       ),
-      home: const SignInUp(),
+      home: const Home(),
     );
   }
 }
