@@ -33,7 +33,6 @@ class _MyUploadsState extends State<MyUploads> {
       onPressed: () async {
         UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
 
-        print(userDetailsModel.toMap());
         if (userDetailsModel.id == null) {
           showDialog(
               context: context,

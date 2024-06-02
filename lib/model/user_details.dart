@@ -1,5 +1,4 @@
 import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserDetailsModel {
   static const String spKey = 'user_data';

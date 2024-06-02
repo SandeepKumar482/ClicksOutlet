@@ -86,7 +86,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   });
                   Utils.getSnacbar(
                       "Authentication Status", "Authenticated!!!!!!!");
-                  Get.off(UserDetailsForm());
+                  Get.off(const UserDetailsForm());
                 },
                 style: ElevatedButton.styleFrom(),
                 child: _isLoading

@@ -7,16 +7,16 @@ class FloatingMsg {
       {required BuildContext context,
       required String? msg,
       required MsgType msgType}) {
-    Color? _color;
+    Color? color;
     switch (msgType) {
       case MsgType.success:
-        _color = Colors.green;
+        color = Colors.green;
         break;
       case MsgType.error:
-        _color = const Color.fromARGB(141, 244, 67, 54);
+        color = const Color.fromARGB(141, 244, 67, 54);
         break;
       case MsgType.warning:
-        _color = Colors.yellow;
+        color = Colors.yellow;
         break;
     }
 
@@ -30,7 +30,7 @@ class FloatingMsg {
         content: Container(
           constraints: const BoxConstraints(minHeight: 50.0),
           decoration: BoxDecoration(
-            color: _color,
+            color: color,
             borderRadius: BorderRadius.circular(12.0),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),

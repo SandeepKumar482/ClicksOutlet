@@ -18,9 +18,9 @@ class UserDetailsForm extends StatelessWidget {
     double deviceHeight = MediaQuery.of(context).size.height;
     UserCollectionService userCollectionService = UserCollectionService();
 
-    final _formKey = GlobalKey<FormState>();
-    TextEditingController _name = TextEditingController();
-    TextEditingController _userName = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    TextEditingController name = TextEditingController();
+    TextEditingController userName = TextEditingController();
 
     return Scaffold(
         appBar: AppBar(
@@ -34,7 +34,7 @@ class UserDetailsForm extends StatelessWidget {
         ),
         body: Center(
             child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -42,7 +42,7 @@ class UserDetailsForm extends StatelessWidget {
                         children: <Widget>[
                           InputWidget(
                             label: "User Name",
-                            controller: _userName,
+                            controller: userName,
                             validator: (value) {
                               if (value!
                                       .isEmpty /*||
@@ -61,7 +61,7 @@ class UserDetailsForm extends StatelessWidget {
                           const SizedBox(height: 20.0),
                           InputWidget(
                             label: "Name",
-                            controller: _name,
+                            controller: name,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 Utils.getSnacbar(
@@ -78,8 +78,8 @@ class UserDetailsForm extends StatelessWidget {
                             width: deviceWidth * 0.65, // 60% of device width
                             child: ElevatedButton(
                               onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
+                                if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
                                   try {
                                     bool isAlreadyExist =
                                         false; /*userCollectionService
@@ -96,8 +96,8 @@ class UserDetailsForm extends StatelessWidget {
                                           userCollectionService.addUpdateData(
                                               UserDetailsModel(
                                                   id: "sd",
-                                                  name: _name.text,
-                                                  userName: _userName.text));
+                                                  name: name.text,
+                                                  userName: userName.text));
                                       if (await isAdded) {
                                         Utils.getSnacbar(
                                             "GREAT!!", "Joined Successfully");
