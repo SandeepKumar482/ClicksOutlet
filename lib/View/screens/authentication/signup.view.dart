@@ -129,11 +129,10 @@ class _SignInUpState extends State<SignInUp>
                           }
                         }
                       },
-                      child: const Text('Submit'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: ColorsConst.secondary,
-                        primary: ColorsConst.fourth,
                       ),
+                      child: const Text('Submit'),
                     ),
                   )
                   /*SizedBox(

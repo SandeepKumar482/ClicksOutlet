@@ -18,26 +18,29 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      onChanged: onChange,
-      controller: controller,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
-          borderSide: const BorderSide(
-            color: ColorsConst.primary,
-            width: 2.0,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: TextFormField(
+        onChanged: onChange,
+        controller: controller,
+        validator: validator,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: const BorderSide(
+              color: ColorsConst.primary,
+              width: 2.0,
+            ),
           ),
-        ),
-        prefixIcon: prefixIcon,
-        labelStyle: const TextStyle(color: ColorsConst.third),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
-          borderSide: const BorderSide(
-            color: ColorsConst.primary,
-            width: 2.0,
+          prefixIcon: prefixIcon,
+          labelStyle: const TextStyle(color: ColorsConst.third),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: const BorderSide(
+              color: ColorsConst.primary,
+              width: 2.0,
+            ),
           ),
         ),
       ),

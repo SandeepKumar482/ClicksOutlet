@@ -1,17 +1,16 @@
 import 'dart:io';
 
+import 'package:clicksoutlet/View/screens/authentication/auth.view.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
-import 'package:clicksoutlet/constants/style.dart';
 import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/models/click.model.dart';
+import 'package:clicksoutlet/model/click.model.dart';
+import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
-import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 class MyUploads extends StatefulWidget {
   const MyUploads({super.key});
@@ -30,7 +29,17 @@ class _MyUploadsState extends State<MyUploads> {
   void initState() {
     addPhotoIcon = FloatingActionButton(
       onPressed: () async {
-        await selectAnduploadImage();
+        UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
+
+        if (userDetailsModel.id == null) {
+          showDialog(
+              context: context,
+              builder: (ctx) {
+                return const Auth();
+              });
+        } else {
+          await selectAnduploadImage();
+        }
       },
       child: const Icon(
         Icons.add_a_photo_outlined,
@@ -60,7 +69,7 @@ class _MyUploadsState extends State<MyUploads> {
         openAddClickBottomSheet(
             context: context, imagePath: selectedImage.path);
       } else {
-        showSnackBar(
+        FloatingMsg.show(
             context: context,
             msg: "Please Select A Image",
             msgType: MsgType.error);
@@ -69,7 +78,7 @@ class _MyUploadsState extends State<MyUploads> {
       PermissionStatus requestStatus = await Permission.photos.request();
       if (requestStatus.isGranted) {
       } else {
-        showSnackBar(
+        FloatingMsg.show(
             context: context,
             msg: "Please Allow Photos First",
             msgType: MsgType.error);
@@ -156,7 +165,7 @@ class _MyUploadsState extends State<MyUploads> {
                                 break;
                               case TaskState.error:
                                 uploadPercentage = null;
-                                showSnackBar(
+                                FloatingMsg.show(
                                     context: context,
                                     msg:
                                         "Something went Wrong While Uploading!!!",

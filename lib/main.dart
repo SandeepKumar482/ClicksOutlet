@@ -1,16 +1,12 @@
-<<<<<<< HEAD
 import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/config/config.dart';
-=======
-import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
->>>>>>> origin/sandeep
 import 'package:clicksoutlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final Config config = Config(imageFolder: 'Dev');
+final Config config = Config(userCollection: 'Dev Users', imageFolder: 'Dev');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
