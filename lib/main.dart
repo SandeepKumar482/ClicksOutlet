@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/config/config.dart';
+=======
+import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
+>>>>>>> origin/sandeep
 import 'package:clicksoutlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
