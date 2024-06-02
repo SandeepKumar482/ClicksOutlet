@@ -1,5 +1,4 @@
 import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
-import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicksoutlet/View/widgets/otp_input.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
 import 'package:clicksoutlet/utils/utils.dart';
@@ -34,8 +33,8 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
+    return AlertDialog(
+      /*appBar: AppBar(
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: ColorsConst.primary,
@@ -43,8 +42,15 @@ class _OtpScreenState extends State<OtpScreen> {
           word1: "Clicks",
           word2: "Outlet",
         ),
+      ),*/
+      insetPadding: EdgeInsets.zero,
+      title: const Text(
+        "OTP",
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      body: Form(
+      scrollable: true,
+      elevation: 10,
+      content: Form(
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +94,9 @@ class _OtpScreenState extends State<OtpScreen> {
                       "Authentication Status", "Authenticated!!!!!!!");
                   Get.off(const UserDetailsForm());
                 },
-                style: ElevatedButton.styleFrom(),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorsConst.fourth,
+                    foregroundColor: ColorsConst.secondary),
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text('Submit'),
