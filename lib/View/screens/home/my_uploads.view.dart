@@ -22,7 +22,7 @@ class MyUploads extends StatefulWidget {
 }
 
 class _MyUploadsState extends State<MyUploads> {
-  List<ClickModel> clickList = [];
+  List<ImageModel> imageList = [];
 
   late Widget addPhotoIcon;
   final ImagePicker _picker = ImagePicker();
@@ -52,7 +52,7 @@ class _MyUploadsState extends State<MyUploads> {
 
   @override
   Widget build(BuildContext context) {
-    if (clickList.isEmpty) {
+    if (imageList.isEmpty) {
       return Center(
         child: addPhotoIcon,
       );
@@ -161,14 +161,14 @@ class _MyUploadsState extends State<MyUploads> {
                                 final String imageUrl =
                                     await snapshotEvents.ref.getDownloadURL();
 
-                                ClickModel clickModel = ClickModel(
+                                ImageModel imageModel = ImageModel(
                                     userId: UserDetailsModel.fromSP().id,
                                     url: imageUrl,
                                     caption: caption.text,
                                     tags: [tags.text]);
 
                                 bool isUploaded = await ImageCollectionService()
-                                    .addImage(clickModel);
+                                    .addImage(imageModel);
 
                                 FloatingMsg.show(
                                   context: context,

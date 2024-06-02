@@ -7,10 +7,10 @@ class ImageCollectionService {
   final collectionReference =
       FirebaseFirestore.instance.collection(config.imageCollection);
 
-  Future<bool> addImage(ClickModel clickModel) async {
+  Future<bool> addImage(ImageModel imageModel) async {
     try {
       collectionReference.snapshots();
-      await collectionReference.doc().set(clickModel.toMap());
+      await collectionReference.doc().set(imageModel.toMap());
       debugPrint(
           '#####################################Data Added Successfully#####################################');
       return true;
@@ -19,5 +19,9 @@ class ImageCollectionService {
           "#####################################Operation Failed#############################################");
     }
     return false;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getImages() async {
+    return collectionReference.get();
   }
 }
