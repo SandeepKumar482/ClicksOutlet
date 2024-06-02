@@ -1,16 +1,23 @@
+import 'dart:io';
+
 import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
 import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/Utils.dart';
+import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../widgets/custom_app_bar.widget.dart';
 
 class UserDetailsForm extends StatelessWidget {
-  const UserDetailsForm({super.key});
+  UserDetailsForm({super.key});
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +29,7 @@ class UserDetailsForm extends StatelessWidget {
     TextEditingController name = TextEditingController();
     TextEditingController userName = TextEditingController();
 
+    XFile? profileImage;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -40,37 +48,102 @@ class UserDetailsForm extends StatelessWidget {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          InputWidget(
-                            label: "User Name",
-                            controller: userName,
-                            validator: (value) {
-                              if (value!
-                                      .isEmpty /*||
-                                    userCollectionService
-                                        .isUserNameAlreadyExist(
-                                            UserDetailsModel(
-                                                userName: value,
-                                                labelName: "")) as bool*/
-                                  ) {
-                                return 'Please Enter a Valid user_name ';
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: ColorsConst.primary,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: ColorsConst.secondary,
+                                  // Set your desired border color
+                                  width: 2.0, // Set your desired border width
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: profileImage == null
+                                      ? Icon(
+                                          Icons.add_a_photo_outlined,
+                                          size: deviceHeight * 0.100,
+                                        )
+                                      : Image.file(
+                                          File(profileImage.path),
+                                          fit: BoxFit.cover,
+                                          width: deviceWidth * 0.1,
+                                          // Set your desired width
+                                          height: deviceHeight *
+                                              0.1, // Set your desired height
+                                        ),
+                                ),
+                              ),
+                            ),
+                            onTap: () async {
+                              PermissionStatus status =
+                                  await Permission.photos.status;
+                              if (status.isGranted) {
+                                profileImage = await _picker.pickImage(
+                                    source: ImageSource.gallery);
                               } else {
-                                return null;
+                                PermissionStatus requestStatus =
+                                    await Permission.photos.request();
+                                if (requestStatus.isGranted) {
+                                } else {
+                                  FloatingMsg.show(
+                                      context: context,
+                                      msg: "Please Allow Photos First",
+                                      msgType: MsgType.error);
+                                }
                               }
                             },
                           ),
+                          SizedBox(
+                            height: 25,
+                            /*child: Divider(
+                              endIndent: deviceWidth * 0.2,
+                              indent: deviceWidth * 0.2,
+                            ),*/
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 38),
+                            child: InputWidget(
+                              label: "User Name",
+                              controller: userName,
+                              prefixIcon: const Icon(Icons.person),
+                              validator: (value) {
+                                if (value!.isEmpty ||
+                                    userCollectionService
+                                        .isUserNameAlreadyExist(
+                                            UserDetailsModel(
+                                                id: userName.text,
+                                                name: "",
+                                                userName: "")) as bool) {
+                                  return 'Please Enter a Valid user_name ';
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
+                          ),
                           const SizedBox(height: 20.0),
-                          InputWidget(
-                            label: "Name",
-                            controller: name,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                Utils.getSnacbar(
-                                    "OOPS!!", "Please Enter a Valid Name");
-                                return ' ';
-                              } else {
-                                return null;
-                              }
-                            },
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 38.0),
+                            child: InputWidget(
+                              label: "Label Name",
+                              controller: name,
+                              prefixIcon:
+                                  const Icon(Icons.label_important_outline),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  Utils.getSnacbar(
+                                      "OOPS!!", "Please Enter a Valid Name");
+                                  return ' ';
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
                           ),
                           const SizedBox(height: 20.0),
                           SizedBox(height: deviceHeight * 0.02),
@@ -81,12 +154,12 @@ class UserDetailsForm extends StatelessWidget {
                                 if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
                                   try {
-                                    bool isAlreadyExist =
-                                        false; /*userCollectionService
+                                    bool isAlreadyExist = userCollectionService
                                         .isUserNameAlreadyExist(
                                             UserDetailsModel(
-                                                userName: _userName,
-                                                labelName: _labelName)) as bool;*/
+                                                id: userName.text,
+                                                name: "",
+                                                userName: "")) as bool;
                                     if (isAlreadyExist) {
                                       Utils.getSnacbar(
                                           "User Name Already Exist",
@@ -113,8 +186,8 @@ class UserDetailsForm extends StatelessWidget {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: ColorsConst.secondary,
-                              ),
+                                  foregroundColor: ColorsConst.secondary,
+                                  backgroundColor: ColorsConst.fourth),
                               child: const Text('Submit'),
                             ),
                           )

@@ -7,6 +7,7 @@ class InputWidget extends StatelessWidget {
   final Widget? prefixIcon;
   final void Function(String value)? onChange;
   final String? Function(String?)? validator;
+
   const InputWidget({
     required this.label,
     this.controller,
@@ -26,13 +27,13 @@ class InputWidget extends StatelessWidget {
         validator: validator,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
+          /*border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25.0),
             borderSide: const BorderSide(
               color: ColorsConst.primary,
               width: 2.0,
             ),
-          ),
+          ),*/
           prefixIcon: prefixIcon,
           labelStyle: const TextStyle(color: ColorsConst.third),
           focusedBorder: OutlineInputBorder(

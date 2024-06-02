@@ -46,7 +46,7 @@ class _OtpScreenState extends State<OtpScreen> {
       insetPadding: EdgeInsets.zero,
       title: const Text(
         "OTP",
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.normal),
       ),
       scrollable: true,
       elevation: 10,
@@ -92,7 +92,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   });
                   Utils.getSnacbar(
                       "Authentication Status", "Authenticated!!!!!!!");
-                  Get.off(const UserDetailsForm());
+                  Get.off(UserDetailsForm());
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: ColorsConst.fourth,
