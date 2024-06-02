@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
 import 'package:clicksoutlet/View/screens/authentication/auth.view.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/main.dart';
@@ -9,6 +10,7 @@ import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -31,6 +33,7 @@ class _MyUploadsState extends State<MyUploads> {
       onPressed: () async {
         UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
 
+        print(userDetailsModel.toMap());
         if (userDetailsModel.id == null) {
           showDialog(
               context: context,
@@ -91,10 +94,10 @@ class _MyUploadsState extends State<MyUploads> {
     required String imagePath,
   }) {
     File file = File(imagePath);
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
-    final TextEditingController _caption = TextEditingController();
-    final TextEditingController _tags = TextEditingController();
+    final TextEditingController caption = TextEditingController();
+    final TextEditingController tags = TextEditingController();
     double? uploadPercentage;
 
     return showModalBottomSheet(
@@ -109,7 +112,7 @@ class _MyUploadsState extends State<MyUploads> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
                 child: Form(
-                  key: _formKey,
+                  key: formKey,
                   child: Column(
                     children: [
                       ClipRRect(
@@ -121,14 +124,14 @@ class _MyUploadsState extends State<MyUploads> {
                       ),
                       InputWidget(
                         label: "Caption",
-                        controller: _caption,
+                        controller: caption,
                       ),
                       const SizedBox(
                         height: 20.0,
                       ),
                       InputWidget(
                         label: "Tags",
-                        controller: _tags,
+                        controller: tags,
                       ),
                       const SizedBox(
                         height: 20.0,
@@ -158,7 +161,27 @@ class _MyUploadsState extends State<MyUploads> {
                               case TaskState.success:
                                 final String imageUrl =
                                     await snapshotEvents.ref.getDownloadURL();
-                                print(imageUrl);
+
+                                ClickModel clickModel = ClickModel(
+                                    userId: UserDetailsModel.fromSP().id,
+                                    url: imageUrl,
+                                    caption: caption.text,
+                                    tags: [tags.text]);
+
+                                bool isUploaded = await ImageCollectionService()
+                                    .addImage(clickModel);
+
+                                FloatingMsg.show(
+                                  context: context,
+                                  msg: isUploaded
+                                      ? "Image Uploaded"
+                                      : "Unable to Upload Image",
+                                  msgType: isUploaded
+                                      ? MsgType.success
+                                      : MsgType.error,
+                                );
+                                Get.back();
+
                                 break;
                               case TaskState.canceled:
                                 uploadPercentage = null;
@@ -170,6 +193,8 @@ class _MyUploadsState extends State<MyUploads> {
                                     msg:
                                         "Something went Wrong While Uploading!!!",
                                     msgType: MsgType.error);
+                                Get.back();
+
                                 break;
                             }
                           });

@@ -6,7 +6,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final Config config = Config(userCollection: 'Dev Users', imageFolder: 'Dev');
+final Config config = Config(
+    userCollection: 'Dev Users',
+    imageFolder: 'Dev',
+    imageCollection: 'Dev Images');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

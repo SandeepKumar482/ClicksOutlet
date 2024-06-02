@@ -7,8 +7,18 @@ class ClickModel {
 
   ClickModel(
       {required this.url,
-      required this.caption,
-      required this.tags,
       required this.userId,
-      required this.likes});
+      this.caption,
+      this.tags = const [],
+      this.likes});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'url': url,
+      'caption': caption,
+      'tags': tags,
+      'user_id': userId,
+      'likes': likes
+    };
+  }
 }

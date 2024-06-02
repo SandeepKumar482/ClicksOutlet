@@ -3,7 +3,6 @@ import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
-import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
 import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

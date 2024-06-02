@@ -37,10 +37,10 @@ class _SignInUpState extends State<SignInUp>
         );
       } catch (e) {}
 
-      print('User is signed in!');
+      debugPrint('User is signed in!');
     } else {
       // The user is not logged in
-      print('User is not signed in.');
+      debugPrint('User is not signed in.');
     }
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
