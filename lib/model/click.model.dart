@@ -41,9 +41,9 @@ class ImageModel {
       {required List<QueryDocumentSnapshot>? docsList}) {
     List<ImageModel> list = [];
     if (docsList != null && docsList.isNotEmpty) {
-      docsList.forEach((dataObj) {
+      for (var dataObj in docsList) {
         list.add(ImageModel.fromMap(map: dataObj.data() as Map));
-      });
+      }
     }
     return list;
   }

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
 import 'package:clicksoutlet/View/widgets/image_dto.widget.dart';
 import 'package:clicksoutlet/View/widgets/image_pop_up.widget.dart';
 import 'package:clicksoutlet/main.dart';

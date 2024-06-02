@@ -1,4 +1,3 @@
-import 'package:clicksoutlet/config/config.dart';
 import 'package:clicksoutlet/main.dart';
 import 'package:flutter/material.dart';
 
