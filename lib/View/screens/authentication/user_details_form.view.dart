@@ -170,7 +170,9 @@ class UserDetailsForm extends StatelessWidget {
                                               UserDetailsModel(
                                                   id: "sd",
                                                   name: name.text,
-                                                  userName: userName.text));
+                                                  userName: userName.text,
+                                                  profilePicture:
+                                                      profileImage?.path));
                                       if (await isAdded) {
                                         Utils.getSnacbar(
                                             "GREAT!!", "Joined Successfully");
