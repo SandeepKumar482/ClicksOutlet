@@ -44,11 +44,15 @@ class ImageDialog extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.download),
-                        onPressed: () {
+                        onPressed: () async {
                           // Add your download logic here.
                           try {
-                            ImageCollectionService()
+                            await ImageCollectionService()
                                 .downloadAndSaveImage(imageUrl!);
+                            FloatingMsg.show(
+                                context: context,
+                                msg: "Image Saved!",
+                                msgType: MsgType.success);
                           } catch (e) {
                             FloatingMsg.show(
                                 context: context,
