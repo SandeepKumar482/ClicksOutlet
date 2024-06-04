@@ -1,8 +1,11 @@
+import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
 import 'package:clicksoutlet/main.dart';
+import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {
   final String? imageUrl;
+
   const ImageDialog({super.key, required this.imageUrl});
 
   @override
@@ -43,6 +46,15 @@ class ImageDialog extends StatelessWidget {
                         icon: const Icon(Icons.download),
                         onPressed: () {
                           // Add your download logic here.
+                          try {
+                            ImageCollectionService()
+                                .downloadAndSaveImage(imageUrl!);
+                          } catch (e) {
+                            FloatingMsg.show(
+                                context: context,
+                                msg: e.toString(),
+                                msgType: MsgType.error);
+                          }
                         },
                       ),
                       IconButton(

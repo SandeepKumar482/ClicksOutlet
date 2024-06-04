@@ -33,13 +33,12 @@ class MyApp extends StatelessWidget {
         .getToken()
         .then((value) => printInfo(info: "token---->$value"));
     return GetMaterialApp(
-      title: 'Clicks Outlet',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
-      home: const Home(),
-    );
+        title: 'Clicks Outlet',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.green,
+        ),
+        home: const Home());
   }
 }
