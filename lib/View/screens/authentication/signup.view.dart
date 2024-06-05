@@ -116,7 +116,7 @@ class _SignInUpState extends State<SignInUp>
                               verificationFailed: (FirebaseAuthException e) {},
                               codeSent:
                                   (String verificationId, int? resendToken) {
-                                Get.to(OtpScreen(verificationId));
+                                // Get.to(OtpScreen(verificationId));
                                 Utils.getSnacbar(
                                     "Otp Sent", "to your phone number");
                               },
