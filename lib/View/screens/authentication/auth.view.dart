@@ -35,16 +35,10 @@ class _AuthState extends State<Auth> {
           mainAxisSize: MainAxisSize.min,
           children: [
             brandName,
-            isOTPSent
-                ? const _OTPModel()
-                : _AuthModel(
-                    codeSent: (String verificationId, int? resendToken) {
-                      setState(() {
-                        // isOTPSent = t
-                        // rue;
-                      });
-                    },
-                  ),
+            const SizedBox(
+              height: 12.0,
+            ),
+            const _AuthModel(),
           ],
         ),
       ),
@@ -53,8 +47,7 @@ class _AuthState extends State<Auth> {
 }
 
 class _AuthModel extends StatefulWidget {
-  final void Function(String, int?) codeSent;
-  const _AuthModel({required this.codeSent});
+  const _AuthModel();
 
   @override
   State<_AuthModel> createState() => __AuthModelState();
@@ -65,70 +58,78 @@ class __AuthModelState extends State<_AuthModel> {
 
   bool isSendingVerifcationCode = false;
   bool isGoolgleAuthenticating = false;
+  bool isOTPSent = false;
+  String? verificationCode;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InputWidget(
-          label: 'Phone Number',
-          prefixIcon: const Icon(Icons.phone_android_rounded),
-          readOnly: isSendingVerifcationCode,
-          suffixIcon: isSendingVerifcationCode
-              ? const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator())
-              : InkWell(
-                  onTap: _sendVerificationCode,
-                  child: const Icon(
-                    Icons.arrow_circle_right_outlined,
-                    size: 35.0,
+    if (isOTPSent && verificationCode != null) {
+      return _OTPModel(
+        verificationId: verificationCode!,
+      );
+    } else {
+      return Column(
+        children: [
+          InputWidget(
+            label: 'Phone Number',
+            prefixIcon: const Icon(Icons.phone_android_rounded),
+            readOnly: isSendingVerifcationCode,
+            suffixIcon: isSendingVerifcationCode
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator())
+                : InkWell(
+                    onTap: _sendVerificationCode,
+                    child: const Icon(
+                      Icons.arrow_circle_right_outlined,
+                      size: 35.0,
+                    ),
                   ),
-                ),
-          controller: controller,
-        ),
-        Row(
-          children: [
-            const Expanded(child: Divider()),
-            Container(
-              height: 40.0,
-              width: 40.0,
-              decoration: BoxDecoration(
-                  color: ColorsConst.primary,
-                  borderRadius: BorderRadius.circular(25.0)),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: const Text("OR"),
-            ),
-            const Expanded(child: Divider()),
-          ],
-        ),
-        ElevatedButton(
-          onPressed: isGoolgleAuthenticating ? null : _googleAuth,
-          child: isGoolgleAuthenticating
-              ? const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 20.0,
-                        width: 20.0,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
+            controller: controller,
+          ),
+          Row(
+            children: [
+              const Expanded(child: Divider()),
+              Container(
+                height: 40.0,
+                width: 40.0,
+                decoration: BoxDecoration(
+                    color: ColorsConst.primary,
+                    borderRadius: BorderRadius.circular(25.0)),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Text("OR"),
+              ),
+              const Expanded(child: Divider()),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: isGoolgleAuthenticating ? null : _googleAuth,
+            child: isGoolgleAuthenticating
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 20.0,
+                          width: 20.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
-                      Text("Authenticating ...")
-                    ],
-                  ),
-                )
-              : const Text('Continue with Google'),
-        )
-      ],
-    );
+                        SizedBox(
+                          width: 12.0,
+                        ),
+                        Text("Authenticating ...")
+                      ],
+                    ),
+                  )
+                : const Text('Continue with Google'),
+          )
+        ],
+      );
+    }
   }
 
   Future<void> _sendVerificationCode() async {
@@ -143,16 +144,18 @@ class __AuthModelState extends State<_AuthModel> {
           phoneNumber: '+91${controller?.text.toString()}',
           verificationCompleted: (PhoneAuthCredential credential) {},
           verificationFailed: (FirebaseAuthException e) {},
-          codeSent: (String verificationId, int? resendToken) {},
+          codeSent: (String verificationId, int? resendToken) {
+            verificationCode = verificationId;
+            setState(() {
+              isOTPSent = true;
+            });
+          },
           codeAutoRetrievalTimeout: (String verificationId) {},
         );
       } catch (e) {
         e.printError(info: "Error in authentication--");
         Utils.getSnacbar("Authentication", e.toString());
       }
-      setState(() {
-        isSendingVerifcationCode = false;
-      });
     } else {
       Utils.getSnacbar("Invalid!!!", "Enter a Valid Phone Number");
     }
@@ -195,7 +198,8 @@ class __AuthModelState extends State<_AuthModel> {
 }
 
 class _OTPModel extends StatefulWidget {
-  const _OTPModel({super.key});
+  final String verificationId;
+  const _OTPModel({required this.verificationId});
 
   @override
   State<_OTPModel> createState() => __OTPModelState();
@@ -220,51 +224,61 @@ class __OTPModelState extends State<_OTPModel> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              OtpInput(_fieldOne, true), // auto focus
-              OtpInput(_fieldTwo, false),
-              OtpInput(_fieldThree, false),
-              OtpInput(_fieldFour, false),
-              OtpInput(_fieldFive, false),
-              OtpInput(_fieldSix, false)
-            ],
-          ),
-          SizedBox(
-            child: ElevatedButton(
-              onPressed: () async {
-                setState(() {
-                  _isLoading = true;
-                });
-
-                _otpController.text = _fieldOne.text +
-                    _fieldTwo.text +
-                    _fieldThree.text +
-                    _fieldFour.text +
-                    _fieldFive.text +
-                    _fieldSix.text;
-                // PhoneAuthProvider.credential(
-                //   verificationId: widget.verificationId,
-                //   smsCode: _otpController.text,
-                // );
-                setState(() {
-                  _isLoading = false;
-                });
-                Utils.getSnacbar(
-                    "Authentication Status", "Authenticated!!!!!!!");
-                Get.off(UserDetailsForm());
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorsConst.fourth,
-                  foregroundColor: ColorsConst.secondary),
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('Submit'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OtpInput(_fieldOne, true), // auto focus
+                OtpInput(_fieldTwo, false),
+                OtpInput(_fieldThree, false),
+                OtpInput(_fieldFour, false),
+                OtpInput(_fieldFive, false),
+                OtpInput(_fieldSix, false)
+              ],
             ),
+          ),
+          ElevatedButton(
+            onPressed: _isLoading ? null : _verifyOTP,
+            child: _isLoading
+                ? const Text("Verifyinig ...")
+                : const Text('Submit'),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _verifyOTP() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _otpController.text = _fieldOne.text +
+        _fieldTwo.text +
+        _fieldThree.text +
+        _fieldFour.text +
+        _fieldFive.text +
+        _fieldSix.text;
+
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: widget.verificationId,
+      smsCode: _otpController.text,
+    );
+    await auth.signInWithCredential(credential).then((cred) {
+      FloatingMsg.show(
+          context: context, msg: "Sign In", msgType: MsgType.success);
+    }).catchError((e, s) {
+      FloatingMsg.show(
+          context: context,
+          msg: "Wrong SMS ${e.message}",
+          msgType: MsgType.error);
+    });
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
