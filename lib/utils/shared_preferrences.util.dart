@@ -41,4 +41,9 @@ class PreferenceUtils {
     var prefs = await _instance;
     return prefs.setString(key, jsonEncode(value));
   }
+
+  static Future<bool> clear() async {
+    var prefs = await _instance;
+    return prefs.clear();
+  }
 }

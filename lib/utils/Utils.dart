@@ -14,6 +14,14 @@ class Utils {
     ));
   }
 
+  static double getWidth({required BuildContext context}) {
+    return MediaQuery.of(context).size.width;
+  }
+
+  static double getHeight({required BuildContext context}) {
+    return MediaQuery.of(context).size.height;
+  }
+
   static String? generateUserName({required String? username}) {
     return username?.split('@')[0].replaceAll(RegExp(r'[^\w\s]+'), '_');
   }

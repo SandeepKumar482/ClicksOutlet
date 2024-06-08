@@ -20,17 +20,6 @@ class MyProfile extends StatelessWidget {
   TextEditingController userName = TextEditingController();
 
   @override
-  void initState() async {
-    UserDetailsModel? userDetailsModel = await UserCollectionService()
-        .fetchData(UserDetailsModel(id: "", name: "", userName: ""));
-    if (UserDetailsModel != null) {
-      name.text = userDetailsModel!.name!;
-      userName.text = userDetailsModel!.userName!;
-      profileImage?.path != userDetailsModel!.profilePicture;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;

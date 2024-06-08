@@ -111,17 +111,17 @@ class UserDetailsForm extends StatelessWidget {
                               controller: userName,
                               prefixIcon: const Icon(Icons.person),
                               validator: (value) {
-                                if (value!.isEmpty ||
-                                    userCollectionService
-                                        .isUserNameAlreadyExist(
-                                            UserDetailsModel(
-                                                id: userName.text,
-                                                name: "",
-                                                userName: "")) as bool) {
-                                  return 'Please Enter a Valid user_name ';
-                                } else {
-                                  return null;
-                                }
+                                // if (value!.isEmpty ||
+                                //     userCollectionService
+                                //         .isUserNameAlreadyExist(
+                                //             UserDetailsModel(
+                                //                 id: userName.text,
+                                //                 name: "",
+                                //                 userName: "")) as bool) {
+                                //   return 'Please Enter a Valid user_name ';
+                                // } else {
+
+                                // }
                               },
                             ),
                           ),
@@ -154,31 +154,31 @@ class UserDetailsForm extends StatelessWidget {
                                 if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
                                   try {
-                                    bool isAlreadyExist = userCollectionService
-                                        .isUserNameAlreadyExist(
-                                            UserDetailsModel(
-                                                id: userName.text,
-                                                name: "",
-                                                userName: "")) as bool;
-                                    if (isAlreadyExist) {
-                                      Utils.getSnacbar(
-                                          "User Name Already Exist",
-                                          "Try another one");
-                                    } else {
-                                      Future<bool> isAdded =
-                                          userCollectionService.addUpdateData(
-                                              UserDetailsModel(
-                                                  id: "sd",
-                                                  name: name.text,
-                                                  userName: userName.text,
-                                                  profilePicture:
-                                                      profileImage?.path));
-                                      if (await isAdded) {
-                                        Utils.getSnacbar(
-                                            "GREAT!!", "Joined Successfully");
-                                        Get.off(const Home());
-                                      }
-                                    }
+                                    // bool isAlreadyExist = userCollectionService
+                                    //     .isUserNameAlreadyExist(
+                                    //         UserDetailsModel(
+                                    //             id: userName.text,
+                                    //             name: "",
+                                    //             userName: "")) as bool;
+                                    // if (isAlreadyExist) {
+                                    //   Utils.getSnacbar(
+                                    //       "User Name Already Exist",
+                                    //       "Try another one");
+                                    // } else {
+                                    //   Future<bool> isAdded =
+                                    //       userCollectionService.addUpdateData(
+                                    //           UserDetailsModel(
+                                    //               id: "sd",
+                                    //               name: name.text,
+                                    //               userName: userName.text,
+                                    //               profilePicture:
+                                    //                   profileImage?.path));
+                                    //   if (await isAdded) {
+                                    //     Utils.getSnacbar(
+                                    //         "GREAT!!", "Joined Successfully");
+                                    //     Get.off(const Home());
+                                    //   }
+                                    // }
                                   } catch (e) {
                                     e.printError(
                                         info: "Error in authentication--");
