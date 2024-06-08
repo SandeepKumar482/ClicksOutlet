@@ -1,10 +1,7 @@
-import 'package:clicksoutlet/FirebaseService/google_auth.service.dart';
-import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
+import 'package:clicksoutlet/FirebaseService/auth.service.dart';
 import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
-import 'package:clicksoutlet/model/user_details.dart';
-import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -187,35 +184,16 @@ class __AuthModelState extends State<_AuthModel> {
     setState(() {
       currentAuthState = AuthState.googleAuthentication;
     });
-    UserCredential? userCredential = await GoogleAuth.signInWithGoogle();
-    if (userCredential?.user == null) {
-      FloatingMsg.show(
-          context: context,
-          msg: "Something Went Wrong",
-          msgType: MsgType.error);
+    UserCredential? userCredential = await AuthSevrvices.signInWithGoogle();
+    if (userCredential != null) {
+      Get.back();
+      AuthSevrvices.validateUser(
+          context: context, userCredential: userCredential);
     } else {
-      User user = userCredential!.user!;
-      UserDetailsModel userDetailsModel = UserDetailsModel(
-        id: user.uid,
-        name: user.displayName,
-        userName: Utils.generateUserName(username: user.email),
-        profilePicture: user.photoURL,
-      );
-
-      bool isSetToFB =
-          await UserCollectionService().addUpdateData(userDetailsModel);
-
-      FloatingMsg.show(
-        context: context,
-        msg: isSetToFB ? "Sign IN Successfully" : "Failed to Authenticate",
-        msgType: isSetToFB ? MsgType.success : MsgType.error,
-      );
+      setState(() {
+        currentAuthState = AuthState.auth;
+      });
     }
-
-    setState(() {
-      currentAuthState = AuthState.auth;
-    });
-    Get.back();
   }
 }
 
@@ -269,25 +247,21 @@ class __OTPModelState extends State<_OTPModel> {
   }
 
   Future<void> _verifyOTP() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
     setState(() {
       currentOTPSatet = OTPState.verifying;
     });
 
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: widget.verificationId,
-      smsCode: _otpController.text,
-    );
+    UserCredential? userCredential = await AuthSevrvices.verifyOTP(
+        verificationId: widget.verificationId, smsCode: _otpController.text);
 
-    await auth.signInWithCredential(credential).then((cred) {
+    if (userCredential != null) {
       Get.back();
-    }).catchError((e, s) {
-      currentOTPSatet = OTPState.wrongOtp;
-    });
-
-    setState(() {
-      currentOTPSatet = OTPState.verifying;
-    });
+      AuthSevrvices.validateUser(
+          context: context, userCredential: userCredential);
+    } else {
+      setState(() {
+        currentOTPSatet = OTPState.wrongOtp;
+      });
+    }
   }
 }
