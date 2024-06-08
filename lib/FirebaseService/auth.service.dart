@@ -2,7 +2,6 @@ import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
-import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,17 +10,25 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthSevrvices {
   static Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      FirebaseAuth auth = FirebaseAuth.instance;
+      // Trigger the authentication flow
+      final googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final googleAuth = await googleUser?.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
+      if (googleAuth != null) {
+        // Create a new credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+        // Once signed in, return the UserCredential
+        return await auth.signInWithCredential(credential);
+      } else {
+        return null;
+      }
     } on Exception {
       return null;
     }
@@ -53,7 +60,7 @@ class AuthSevrvices {
     }
   }
 
-  static Future<void> validateUser(
+  static Future<UserDetailsModel?> validateUser(
       {required BuildContext context,
       required UserCredential? userCredential}) async {
     if (userCredential?.user == null) {
@@ -63,23 +70,19 @@ class AuthSevrvices {
           msgType: MsgType.error);
     } else {
       User user = userCredential!.user!;
-      UserDetailsModel userDetailsModel = UserDetailsModel(
-        id: user.uid,
-        email: userCredential.user?.email,
-        phone: userCredential.user?.phoneNumber,
-        name: user.displayName,
-        userName: Utils.generateUserName(username: user.email),
-        profilePicture: user.photoURL,
-      );
 
-      bool isSetToFB =
-          await UserCollectionService().addUpdateData(userDetailsModel);
+      final UserDetailsModel? userDetailsModel =
+          await UserCollectionService().fetchData(userId: user.uid);
 
-      FloatingMsg.show(
-        context: context,
-        msg: isSetToFB ? "Sign IN Successfully" : "Failed to Authenticate",
-        msgType: isSetToFB ? MsgType.success : MsgType.error,
-      );
+      if (userDetailsModel?.id != null) {
+        await userDetailsModel!.setToSP();
+        return userDetailsModel;
+      } else {
+        return null;
+        // bool isSetToFB =
+        //     await UserCollectionService().addUpdateData(userDetailsModel);
+      }
     }
+    return null;
   }
 }

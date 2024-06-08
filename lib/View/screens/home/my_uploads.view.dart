@@ -7,7 +7,6 @@ import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/click.model.dart';
 import 'package:clicksoutlet/model/user_details.dart';
-import 'package:clicksoutlet/utils/Utils.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -31,18 +30,21 @@ class _MyUploadsState extends State<MyUploads> {
 
   @override
   Widget build(BuildContext context) {
-    print(userDetailsModel.toMap());
     if (userDetailsModel.id == null) {
       return Center(
         child: FloatingActionButton(
           onPressed: () async {
+            // UserDetailsForm.showUserDeatilSheet(
+            //     context: context, userDetailsModel: userDetailsModel);
+            AuthSevrvices.signOut();
             UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
             if (userDetailsModel.id == null) {
-              showDialog(
+              await showDialog(
                   context: context,
                   builder: (ctx) {
                     return const Auth();
                   });
+              setState(() {});
             } else {
               await selectAnduploadImage();
             }

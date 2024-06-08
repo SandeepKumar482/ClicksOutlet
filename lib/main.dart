@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 final Config config = Config(
-  userCollection: 'Dev Users',
-  imageFolder: 'Dev',
-  imageCollection: 'Dev Images',
-);
+    userCollection: 'Dev Users',
+    imageFolder: 'Dev',
+    imageCollection: 'Dev Images',
+    userProfilePicture: 'Dev User/Profile Picture/');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

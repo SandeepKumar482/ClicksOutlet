@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/click.model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -39,5 +41,34 @@ class ImageCollectionService {
     } else {
       // Handle error (e.g., show an error message)
     }
+  }
+
+  static Future<String?> uploadImage(
+      {required File? file, required String path}) async {
+    String? donwloadUrl;
+    if (file != null) {
+      UploadTask uploadTask;
+
+      String fileName = DateTime.now().toString();
+      // Create a Reference to the file
+      Reference ref =
+          FirebaseStorage.instance.ref().child(path).child(fileName);
+
+      final metadata = SettableMetadata(
+        contentType: 'image/jpeg',
+        customMetadata: {'picked-file-path': file.path},
+      );
+
+      if (kIsWeb) {
+        uploadTask = ref.putData(await file.readAsBytes(), metadata);
+      } else {
+        uploadTask = ref.putFile(File(file.path), metadata);
+      }
+      donwloadUrl = await uploadTask.then(<String>(TaskSnapshot s) {
+        return s.ref.getDownloadURL();
+      });
+    }
+
+    return donwloadUrl;
   }
 }
