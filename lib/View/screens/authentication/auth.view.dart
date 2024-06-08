@@ -1,10 +1,7 @@
 import 'package:clicksoutlet/FirebaseService/google_auth.service.dart';
 import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
-import 'package:clicksoutlet/View/screens/authentication/otp.view.dart';
-import 'package:clicksoutlet/View/screens/authentication/user_details_form.view.dart';
 import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
-import 'package:clicksoutlet/View/widgets/otp_input.widget.dart';
 import 'package:clicksoutlet/constants/style.dart';
 import 'package:clicksoutlet/model/user_details.dart';
 import 'package:clicksoutlet/utils/floating_msg.util.dart';
@@ -12,6 +9,7 @@ import 'package:clicksoutlet/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -46,6 +44,8 @@ class _AuthState extends State<Auth> {
   }
 }
 
+enum AuthState { auth, sendingVrificationCode, otpSent, googleAuthentication }
+
 class _AuthModel extends StatefulWidget {
   const _AuthModel();
 
@@ -56,114 +56,136 @@ class _AuthModel extends StatefulWidget {
 class __AuthModelState extends State<_AuthModel> {
   TextEditingController? controller = TextEditingController();
 
-  bool isSendingVerifcationCode = false;
-  bool isGoolgleAuthenticating = false;
-  bool isOTPSent = false;
+  AuthState currentAuthState = AuthState.auth;
+  final _formKey = GlobalKey<FormState>();
+
   String? verificationCode;
 
   @override
   Widget build(BuildContext context) {
-    if (isOTPSent && verificationCode != null) {
+    if (currentAuthState == AuthState.otpSent && verificationCode != null) {
       return _OTPModel(
         verificationId: verificationCode!,
       );
     } else {
-      return Column(
-        children: [
-          InputWidget(
-            label: 'Phone Number',
-            prefixIcon: const Icon(Icons.phone_android_rounded),
-            readOnly: isSendingVerifcationCode,
-            suffixIcon: isSendingVerifcationCode
-                ? const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CircularProgressIndicator())
-                : InkWell(
-                    onTap: _sendVerificationCode,
-                    child: const Icon(
-                      Icons.arrow_circle_right_outlined,
-                      size: 35.0,
+      return Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            InputWidget(
+              label: 'Phone Number',
+              prefixIcon: const Icon(Icons.phone_android_rounded),
+              readOnly: currentAuthState == AuthState.sendingVrificationCode,
+              validator: (phoneNumber) {
+                if (phoneNumber != null &&
+                    phoneNumber.length == 10 &&
+                    phoneNumber.isPhoneNumber) {
+                  return null;
+                } else {
+                  return "Enter a Valid Phone Number";
+                }
+              },
+              suffixIcon: currentAuthState == AuthState.sendingVrificationCode
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                      ))
+                  : InkWell(
+                      onTap: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _sendVerificationCode();
+                        }
+                      },
+                      child: const Icon(
+                        Icons.arrow_circle_right_outlined,
+                        size: 35.0,
+                      ),
                     ),
-                  ),
-            controller: controller,
-          ),
-          Row(
-            children: [
-              const Expanded(child: Divider()),
-              Container(
-                height: 40.0,
-                width: 40.0,
-                decoration: BoxDecoration(
-                    color: ColorsConst.primary,
-                    borderRadius: BorderRadius.circular(25.0)),
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Text("OR"),
-              ),
-              const Expanded(child: Divider()),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: isGoolgleAuthenticating ? null : _googleAuth,
-            child: isGoolgleAuthenticating
-                ? const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 20.0,
-                          width: 20.0,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
+              controller: controller,
+            ),
+            Row(
+              children: [
+                const Expanded(child: Divider()),
+                Container(
+                  height: 40.0,
+                  width: 40.0,
+                  decoration: BoxDecoration(
+                      color: ColorsConst.primary,
+                      borderRadius: BorderRadius.circular(25.0)),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: const Text("OR"),
+                ),
+                const Expanded(child: Divider()),
+              ],
+            ),
+            ElevatedButton(
+              onPressed: currentAuthState == AuthState.googleAuthentication
+                  ? null
+                  : _googleAuth,
+              child: currentAuthState == AuthState.googleAuthentication
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 20.0,
+                            width: 20.0,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 12.0,
-                        ),
-                        Text("Authenticating ...")
-                      ],
-                    ),
-                  )
-                : const Text('Continue with Google'),
-          )
-        ],
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Text("Authenticating ...")
+                        ],
+                      ),
+                    )
+                  : const Text('Continue with Google'),
+            )
+          ],
+        ),
       );
     }
   }
 
   Future<void> _sendVerificationCode() async {
-    if (controller?.text.length == 10 && controller!.text.isPhoneNumber) {
+    setState(() {
       setState(() {
-        isSendingVerifcationCode = true;
+        currentAuthState = AuthState.sendingVrificationCode;
       });
-      try {
-        final FirebaseAuth auth = FirebaseAuth.instance;
+    });
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
 
-        await auth.verifyPhoneNumber(
-          phoneNumber: '+91${controller?.text.toString()}',
-          verificationCompleted: (PhoneAuthCredential credential) {},
-          verificationFailed: (FirebaseAuthException e) {},
-          codeSent: (String verificationId, int? resendToken) {
-            verificationCode = verificationId;
-            setState(() {
-              isOTPSent = true;
-            });
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {},
-        );
-      } catch (e) {
-        e.printError(info: "Error in authentication--");
-        Utils.getSnacbar("Authentication", e.toString());
-      }
-    } else {
-      Utils.getSnacbar("Invalid!!!", "Enter a Valid Phone Number");
+      await auth.verifyPhoneNumber(
+        phoneNumber: '+91${controller?.text.toString()}',
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          setState(() {
+            currentAuthState = AuthState.auth;
+          });
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          verificationCode = verificationId;
+          setState(() {
+            currentAuthState = AuthState.otpSent;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      e.printError(info: "Error in authentication--");
+      Utils.getSnacbar("Authentication", e.toString());
     }
   }
 
   Future<void> _googleAuth() async {
     setState(() {
-      isGoolgleAuthenticating = true;
+      currentAuthState = AuthState.googleAuthentication;
     });
     UserCredential? userCredential = await GoogleAuth.signInWithGoogle();
     if (userCredential?.user == null) {
@@ -185,13 +207,13 @@ class __AuthModelState extends State<_AuthModel> {
 
       FloatingMsg.show(
         context: context,
-        msg: isSetToFB ? "Sign IN Successfully" : "Failed to Authenticatye",
+        msg: isSetToFB ? "Sign IN Successfully" : "Failed to Authenticate",
         msgType: isSetToFB ? MsgType.success : MsgType.error,
       );
     }
 
     setState(() {
-      isGoolgleAuthenticating = false;
+      currentAuthState = AuthState.auth;
     });
     Get.back();
   }
@@ -205,47 +227,44 @@ class _OTPModel extends StatefulWidget {
   State<_OTPModel> createState() => __OTPModelState();
 }
 
-class __OTPModelState extends State<_OTPModel> {
-  final _formKey = GlobalKey<FormState>();
-  final _otpController = TextEditingController();
-  bool _isLoading = false;
+enum OTPState { none, verifying, wrongOtp }
 
-  final TextEditingController _fieldOne = TextEditingController();
-  final TextEditingController _fieldTwo = TextEditingController();
-  final TextEditingController _fieldThree = TextEditingController();
-  final TextEditingController _fieldFour = TextEditingController();
-  final TextEditingController _fieldFive = TextEditingController();
-  final TextEditingController _fieldSix = TextEditingController();
+class __OTPModelState extends State<_OTPModel> {
+  OTPState currentOTPSatet = OTPState.none;
+  final _otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                OtpInput(_fieldOne, true), // auto focus
-                OtpInput(_fieldTwo, false),
-                OtpInput(_fieldThree, false),
-                OtpInput(_fieldFour, false),
-                OtpInput(_fieldFive, false),
-                OtpInput(_fieldSix, false)
-              ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: PinCodeTextField(
+            appContext: context,
+            length: 6,
+            readOnly: currentOTPSatet == OTPState.verifying,
+            controller: _otpController,
+            pinTheme: PinTheme(
+              shape: PinCodeFieldShape.box,
+              borderRadius: BorderRadius.circular(8.0),
+              activeColor: Theme.of(context).colorScheme.secondary,
+              inactiveColor: Theme.of(context).colorScheme.primary,
             ),
           ),
-          ElevatedButton(
-            onPressed: _isLoading ? null : _verifyOTP,
-            child: _isLoading
-                ? const Text("Verifyinig ...")
-                : const Text('Submit'),
+        ),
+        if (currentOTPSatet == OTPState.wrongOtp)
+          const Text(
+            "Wrong OTP",
+            style: TextStyle(color: Colors.red),
           ),
-        ],
-      ),
+        ElevatedButton(
+          onPressed: currentOTPSatet == OTPState.verifying ? null : _verifyOTP,
+          child: currentOTPSatet == OTPState.verifying
+              ? const Text("Verifyinig ...")
+              : const Text('Submit'),
+        ),
+      ],
     );
   }
 
@@ -253,32 +272,22 @@ class __OTPModelState extends State<_OTPModel> {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     setState(() {
-      _isLoading = true;
+      currentOTPSatet = OTPState.verifying;
     });
-
-    _otpController.text = _fieldOne.text +
-        _fieldTwo.text +
-        _fieldThree.text +
-        _fieldFour.text +
-        _fieldFive.text +
-        _fieldSix.text;
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
       verificationId: widget.verificationId,
       smsCode: _otpController.text,
     );
+
     await auth.signInWithCredential(credential).then((cred) {
-      FloatingMsg.show(
-          context: context, msg: "Sign In", msgType: MsgType.success);
+      Get.back();
     }).catchError((e, s) {
-      FloatingMsg.show(
-          context: context,
-          msg: "Wrong SMS ${e.message}",
-          msgType: MsgType.error);
+      currentOTPSatet = OTPState.wrongOtp;
     });
 
     setState(() {
-      _isLoading = false;
+      currentOTPSatet = OTPState.verifying;
     });
   }
 }
