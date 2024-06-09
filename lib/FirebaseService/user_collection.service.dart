@@ -1,5 +1,5 @@
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/model/user_details.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/model/user_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -23,16 +23,13 @@ class UserCollectionService {
     return false;
   }
 
-  Future<UserDetailsModel?> fetchData(UserDetailsModel userDetailsModel) async {
-    if (userDetailsModel.userName != null &&
-        userDetailsModel.userName!.isEmpty) {
+  Future<UserDetailsModel?> fetchData({required String? userId}) async {
+    if (userId != null && userId.isEmpty) {
       return null;
     }
-    final documentReference =
-        collectionReference.doc(userDetailsModel.userName);
-    final snapshot = await documentReference.get();
-    if (snapshot.exists) {
-      return UserDetailsModel.fromMap(map: snapshot.data());
+    final document = await collectionReference.doc(userId).get();
+    if (document.exists) {
+      return UserDetailsModel.fromMap(map: document.data());
     }
     return null;
   }

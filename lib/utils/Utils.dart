@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/constants/style.dart';
+import 'package:clicks_outlet/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +12,14 @@ class Utils {
       duration: const Duration(seconds: 2),
       backgroundColor: ColorsConst.fourth,
     ));
+  }
+
+  static double getWidth({required BuildContext context}) {
+    return MediaQuery.of(context).size.width;
+  }
+
+  static double getHeight({required BuildContext context}) {
+    return MediaQuery.of(context).size.height;
   }
 
   static String? generateUserName({required String? username}) {

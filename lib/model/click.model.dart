@@ -38,7 +38,7 @@ class ImageModel {
   }
 
   static List<ImageModel> getImagesList(
-      {required List<QueryDocumentSnapshot>? docsList}) {
+      {required List<QueryDocumentSnapshot<Map<String, dynamic>>>? docsList}) {
     List<ImageModel> list = [];
     if (docsList != null && docsList.isNotEmpty) {
       for (var dataObj in docsList) {

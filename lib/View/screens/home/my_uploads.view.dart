@@ -1,12 +1,15 @@
 import 'dart:io';
 
-import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
-import 'package:clicksoutlet/View/screens/authentication/auth.view.dart';
-import 'package:clicksoutlet/View/widgets/input.widget.dart';
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/model/click.model.dart';
-import 'package:clicksoutlet/model/user_details.dart';
-import 'package:clicksoutlet/utils/floating_msg.util.dart';
+import 'package:clicks_outlet/FirebaseService/auth.service.dart';
+import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
+import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
+import 'package:clicks_outlet/View/screens/home.view.dart';
+import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
+import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/model/click.model.dart';
+import 'package:clicks_outlet/model/user_details.dart';
+import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,21 +27,33 @@ class MyUploads extends StatefulWidget {
 class _MyUploadsState extends State<MyUploads> {
   List<ImageModel> imageList = [];
 
-  late Widget addPhotoIcon;
+  UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
   final ImagePicker _picker = ImagePicker();
 
-  @override
-  void initState() {
-    addPhotoIcon = FloatingActionButton(
-      onPressed: () async {
-        UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
+  Future<List<ImageModel>>? getImages;
 
+  void fetchImageList() {
+    setState(() {
+      getImages =
+          ImageCollectionService().getImages(userId: userDetailsModel.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final FloatingActionButton floatingActionButton = FloatingActionButton(
+      onPressed: () async {
+        userDetailsModel = UserDetailsModel.fromSP();
         if (userDetailsModel.id == null) {
-          showDialog(
+          await showDialog(
               context: context,
+              barrierDismissible: false,
               builder: (ctx) {
                 return const Auth();
               });
+          setState(() {
+            userDetailsModel = UserDetailsModel.fromSP();
+          });
         } else {
           await selectAnduploadImage();
         }
@@ -47,17 +62,26 @@ class _MyUploadsState extends State<MyUploads> {
         Icons.add_a_photo_outlined,
       ),
     );
-    super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    if (imageList.isEmpty) {
+    if (userDetailsModel.id == null) {
       return Center(
-        child: addPhotoIcon,
+        child: floatingActionButton,
       );
     } else {
-      return const Text("sds");
+      fetchImageList();
+      return Column(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                _UserProfile(userDetailsModel: userDetailsModel),
+                Expanded(child: ImagesGrid(getImages: getImages)),
+              ],
+            ),
+          ),
+          floatingActionButton
+        ],
+      );
     }
   }
 
@@ -238,5 +262,45 @@ class _MyUploadsState extends State<MyUploads> {
     }
 
     return uploadTask;
+  }
+}
+
+class _UserProfile extends StatelessWidget {
+  final UserDetailsModel userDetailsModel;
+  const _UserProfile({required this.userDetailsModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 50.0,
+                  backgroundImage: NetworkImage(
+                      userDetailsModel.profilePicture ??
+                          config.imagePreviewUrl),
+                ),
+                const SizedBox(
+                  width: 25.0,
+                ),
+                Text(userDetailsModel.name ?? "Any"),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  await AuthSevrvices.signOut();
+                  Get.back();
+                  Get.to(const Home());
+                },
+                child: const Text("Logout"))
+          ],
+        ),
+      ),
+    );
   }
 }

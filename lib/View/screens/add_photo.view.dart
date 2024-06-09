@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/View/screens/image_upload.view.dart';
+import 'package:clicks_outlet/View/screens/image_upload.view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

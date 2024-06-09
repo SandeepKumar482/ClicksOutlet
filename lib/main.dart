@@ -1,16 +1,16 @@
-import 'package:clicksoutlet/View/screens/home.view.dart';
-import 'package:clicksoutlet/config/config.dart';
-import 'package:clicksoutlet/firebase_options.dart';
+import 'package:clicks_outlet/View/screens/home.view.dart';
+import 'package:clicks_outlet/config/config.dart';
+import 'package:clicks_outlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 final Config config = Config(
-  userCollection: 'Dev Users',
-  imageFolder: 'Dev',
-  imageCollection: 'Dev Images',
-);
+    userCollection: 'Dev Users',
+    imageFolder: 'Dev',
+    imageCollection: 'Dev Images',
+    userProfilePicture: 'Dev User/Profile Picture/');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,13 +33,12 @@ class MyApp extends StatelessWidget {
         .getToken()
         .then((value) => printInfo(info: "token---->$value"));
     return GetMaterialApp(
-      title: 'Clicks Outlet',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
-      home: const Home(),
-    );
+        title: 'Clicks Outlet',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.green,
+        ),
+        home: const Home());
   }
 }
