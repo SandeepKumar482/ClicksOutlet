@@ -25,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -48,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAQ5lR1GEczy74a0g2oExspxf5g7lsHx4Q',
-    appId: '1:849967201601:web:87f96b28675147174535c0',
+    appId: '1:849967201601:web:9430fb093b5facf44535c0',
     messagingSenderId: '849967201601',
     projectId: 'clicks-outlet',
     authDomain: 'clicks-outlet.firebaseapp.com',
     storageBucket: 'clicks-outlet.appspot.com',
-    measurementId: 'G-DS8CGV7PM8',
+    measurementId: 'G-C63JK9LVMN',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAcmvQ_NecyxCbDd_PA3pVghn2TpXx_1T4',
-    appId: '1:849967201601:android:da837d99178714a84535c0',
+    appId: '1:849967201601:android:65cdc7d451a136804535c0',
     messagingSenderId: '849967201601',
     projectId: 'clicks-outlet',
     storageBucket: 'clicks-outlet.appspot.com',
@@ -66,10 +60,34 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAtl-bt3ZLIozNRAmKHKezmUU5BE9alJYM',
-    appId: '1:849967201601:ios:2bce6d47e06aaa5e4535c0',
+    appId: '1:849967201601:ios:574e764c5ff5aba34535c0',
     messagingSenderId: '849967201601',
     projectId: 'clicks-outlet',
     storageBucket: 'clicks-outlet.appspot.com',
-    iosBundleId: 'com.example.async.it.clicksoutlet',
+    androidClientId: '849967201601-cjg1d1s537i6ugp6pmm8jda7ndc2fn4t.apps.googleusercontent.com',
+    iosClientId: '849967201601-qm49olbep7dsbn14ovg9jilvd1q1d7j1.apps.googleusercontent.com',
+    iosBundleId: 'com.async.it.clicksoutlet.clicksOutlet',
   );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAtl-bt3ZLIozNRAmKHKezmUU5BE9alJYM',
+    appId: '1:849967201601:ios:574e764c5ff5aba34535c0',
+    messagingSenderId: '849967201601',
+    projectId: 'clicks-outlet',
+    storageBucket: 'clicks-outlet.appspot.com',
+    androidClientId: '849967201601-cjg1d1s537i6ugp6pmm8jda7ndc2fn4t.apps.googleusercontent.com',
+    iosClientId: '849967201601-qm49olbep7dsbn14ovg9jilvd1q1d7j1.apps.googleusercontent.com',
+    iosBundleId: 'com.async.it.clicksoutlet.clicksOutlet',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAQ5lR1GEczy74a0g2oExspxf5g7lsHx4Q',
+    appId: '1:849967201601:web:ea4b6eeca588b59d4535c0',
+    messagingSenderId: '849967201601',
+    projectId: 'clicks-outlet',
+    authDomain: 'clicks-outlet.firebaseapp.com',
+    storageBucket: 'clicks-outlet.appspot.com',
+    measurementId: 'G-Y3PT00LBWZ',
+  );
+
 }
