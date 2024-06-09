@@ -13,12 +13,17 @@ import 'package:path_provider/path_provider.dart';
 class ImageCollectionService {
   final collectionReference =
       FirebaseFirestore.instance.collection(config.imageCollection);
-  static String trendingImgPrefkey = 'trendingImage';
+  static String trendingImgCachekey = 'trendingImage';
+  static String myUploadImgCachekey = 'myUploads';
 
-  Future<List<ImageModel>> getImages({bool isRefresh = false}) async {
+  Future<List<ImageModel>> getImages(
+      {String? userId, bool isRefresh = false}) async {
+    String cacheKey = userId != null && userId.isNotEmpty
+        ? ImageCollectionService.myUploadImgCachekey
+        : ImageCollectionService.trendingImgCachekey;
     List<ImageModel> imageList = [];
-    Map<String, dynamic> imagesFromSp =
-        PreferenceUtils.getJson(ImageCollectionService.trendingImgPrefkey);
+
+    Map<String, dynamic> imagesFromSp = PreferenceUtils.getJson(cacheKey);
     List<ImageModel> cacheImageList = [];
 
     if (imagesFromSp['images'] is List) {
@@ -28,8 +33,9 @@ class ImageCollectionService {
     }
 
     if (!isRefresh || cacheImageList.isEmpty) {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await collectionReference.limit(25).get();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = userId != null
+          ? await collectionReference.where('user_id', isEqualTo: userId).get()
+          : await collectionReference.limit(25).get();
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> document
           in querySnapshot.docs) {
@@ -43,9 +49,7 @@ class ImageCollectionService {
           imageListMap.add(img.toMap());
         }
 
-        await PreferenceUtils.setString(
-            ImageCollectionService.trendingImgPrefkey,
-            jsonEncode({'images': imageListMap}));
+        await PreferenceUtils.setJson(cacheKey, {'images': imageListMap});
       } else {
         imageList = cacheImageList;
       }

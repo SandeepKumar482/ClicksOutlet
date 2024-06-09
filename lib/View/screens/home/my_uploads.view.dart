@@ -4,6 +4,7 @@ import 'package:clicksoutlet/FirebaseService/auth.service.dart';
 import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
 import 'package:clicksoutlet/View/screens/authentication/auth.view.dart';
 import 'package:clicksoutlet/View/screens/home.view.dart';
+import 'package:clicksoutlet/View/widgets/images_grid.widget.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/click.model.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,35 +31,57 @@ class _MyUploadsState extends State<MyUploads> {
   UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
   final ImagePicker _picker = ImagePicker();
 
+  Future<List<ImageModel>>? getImages;
+
+  void fetchImageList() {
+    setState(() {
+      getImages =
+          ImageCollectionService().getImages(userId: userDetailsModel.id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final FloatingActionButton floatingActionButton = FloatingActionButton(
+      onPressed: () async {
+        userDetailsModel = UserDetailsModel.fromSP();
+        if (userDetailsModel.id == null) {
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (ctx) {
+                return const Auth();
+              });
+          setState(() {
+            userDetailsModel = UserDetailsModel.fromSP();
+          });
+        } else {
+          await selectAnduploadImage();
+        }
+      },
+      child: const Icon(
+        Icons.add_a_photo_outlined,
+      ),
+    );
+
     if (userDetailsModel.id == null) {
       return Center(
-        child: FloatingActionButton(
-          onPressed: () async {
-            userDetailsModel = UserDetailsModel.fromSP();
-            if (userDetailsModel.id == null) {
-              await showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (ctx) {
-                    return const Auth();
-                  });
-              setState(() {
-                userDetailsModel = UserDetailsModel.fromSP();
-              });
-            } else {
-              await selectAnduploadImage();
-            }
-          },
-          child: const Icon(
-            Icons.add_a_photo_outlined,
-          ),
-        ),
+        child: floatingActionButton,
       );
     } else {
+      fetchImageList();
       return Column(
-        children: [_UserProfile(userDetailsModel: userDetailsModel)],
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                _UserProfile(userDetailsModel: userDetailsModel),
+                Expanded(child: ImagesGrid(getImages: getImages)),
+              ],
+            ),
+          ),
+          floatingActionButton
+        ],
       );
     }
   }
