@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clicksoutlet/FirebaseService/auth.service.dart';
 import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
 import 'package:clicksoutlet/View/screens/authentication/auth.view.dart';
+import 'package:clicksoutlet/View/screens/home.view.dart';
 import 'package:clicksoutlet/View/widgets/input.widget.dart';
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/click.model.dart';
@@ -34,17 +35,17 @@ class _MyUploadsState extends State<MyUploads> {
       return Center(
         child: FloatingActionButton(
           onPressed: () async {
-            // UserDetailsForm.showUserDeatilSheet(
-            //     context: context, userDetailsModel: userDetailsModel);
-            AuthSevrvices.signOut();
-            UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
+            userDetailsModel = UserDetailsModel.fromSP();
             if (userDetailsModel.id == null) {
               await showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (ctx) {
                     return const Auth();
                   });
-              setState(() {});
+              setState(() {
+                userDetailsModel = UserDetailsModel.fromSP();
+              });
             } else {
               await selectAnduploadImage();
             }
@@ -268,8 +269,10 @@ class _UserProfile extends StatelessWidget {
               ],
             ),
             ElevatedButton(
-                onPressed: () {
-                  AuthSevrvices.signOut();
+                onPressed: () async {
+                  await AuthSevrvices.signOut();
+                  Get.back();
+                  Get.to(const Home());
                 },
                 child: const Text("Logout"))
           ],
