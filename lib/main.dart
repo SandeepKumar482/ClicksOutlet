@@ -1,6 +1,6 @@
-import 'package:clicksoutlet/View/screens/home.view.dart';
-import 'package:clicksoutlet/config/config.dart';
-import 'package:clicksoutlet/firebase_options.dart';
+import 'package:clicks_outlet/View/screens/home.view.dart';
+import 'package:clicks_outlet/config/config.dart';
+import 'package:clicks_outlet/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

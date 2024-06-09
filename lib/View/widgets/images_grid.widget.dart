@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:clicksoutlet/View/widgets/image_dto.widget.dart';
-import 'package:clicksoutlet/View/widgets/image_pop_up.widget.dart';
-import 'package:clicksoutlet/View/widgets/my_search_bar.widget.dart';
-import 'package:clicksoutlet/model/click.model.dart';
+import 'package:clicks_outlet/View/widgets/image_dto.widget.dart';
+import 'package:clicks_outlet/View/widgets/image_pop_up.widget.dart';
+import 'package:clicks_outlet/View/widgets/my_search_bar.widget.dart';
+import 'package:clicks_outlet/model/click.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 

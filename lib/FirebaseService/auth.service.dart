@@ -1,7 +1,7 @@
-import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
-import 'package:clicksoutlet/model/user_details.dart';
-import 'package:clicksoutlet/utils/floating_msg.util.dart';
-import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
+import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
+import 'package:clicks_outlet/model/user_details.dart';
+import 'package:clicks_outlet/utils/floating_msg.util.dart';
+import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

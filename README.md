@@ -1,4 +1,4 @@
-# clicksoutlet
+# clicks_outlet
 
 A new Flutter project.
 

@@ -1,6 +1,6 @@
-import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/utils/floating_msg.util.dart';
+import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {

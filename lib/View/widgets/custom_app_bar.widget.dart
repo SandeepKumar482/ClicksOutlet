@@ -11,7 +11,7 @@ final Widget brandName = RichText(
     ),
     children: [
       TextSpan(
-        text: " Outliet",
+        text: " Outlet",
         style: TextStyle(
             color: Colors.orangeAccent,
             fontSize: 20,

@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/constants/style.dart';
+import 'package:clicks_outlet/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

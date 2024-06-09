@@ -1,14 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/model/click.model.dart';
-import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/model/click.model.dart';
+import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 class ImageCollectionService {
   final collectionReference =
@@ -73,15 +70,15 @@ class ImageCollectionService {
   }
 
   Future<void> downloadAndSaveImage(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode == 200) {
-      final appDir = await getApplicationDocumentsDirectory();
-      final file = File('${appDir.path}/my_image.jpg');
-      await file.writeAsBytes(response.bodyBytes);
-      // Show a success message or update UI accordingly
-    } else {
-      // Handle error (e.g., show an error message)
-    }
+    // final response = await http.get(Uri.parse(imageUrl));
+    // if (response.statusCode == 200) {
+    //   final appDir = await getApplicationDocumentsDirectory();
+    //   final file = File('${appDir.path}/my_image.jpg');
+    //   await file.writeAsBytes(response.bodyBytes);
+    //   // Show a success message or update UI accordingly
+    // } else {
+    //   // Handle error (e.g., show an error message)
+    // }
   }
 
   static Future<String?> uploadImage(

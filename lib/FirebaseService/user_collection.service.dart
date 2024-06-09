@@ -1,5 +1,5 @@
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/model/user_details.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/model/user_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 

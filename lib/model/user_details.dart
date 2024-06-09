@@ -1,4 +1,4 @@
-import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
+import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 
 class UserDetailsModel {
   static const String spKey = 'user_data';

@@ -1,7 +1,7 @@
-import 'package:clicksoutlet/View/screens/home/liked.view.dart';
-import 'package:clicksoutlet/View/screens/home/my_uploads.view.dart';
-import 'package:clicksoutlet/View/screens/home/trending_clicks.view.dart';
-import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
+import 'package:clicks_outlet/View/screens/home/liked.view.dart';
+import 'package:clicks_outlet/View/screens/home/my_uploads.view.dart';
+import 'package:clicks_outlet/View/screens/home/trending_clicks.view.dart';
+import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 

@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'package:clicksoutlet/FirebaseService/auth.service.dart';
-import 'package:clicksoutlet/FirebaseService/image_collection.service.dart';
-import 'package:clicksoutlet/FirebaseService/user_collection.service.dart';
-import 'package:clicksoutlet/View/widgets/custom_app_bar.widget.dart';
-import 'package:clicksoutlet/View/widgets/input.widget.dart';
-import 'package:clicksoutlet/config/config.dart';
-import 'package:clicksoutlet/constants/style.dart';
-import 'package:clicksoutlet/main.dart';
-import 'package:clicksoutlet/model/user_details.dart';
-import 'package:clicksoutlet/utils/Utils.dart';
-import 'package:clicksoutlet/utils/floating_msg.util.dart';
+import 'package:clicks_outlet/FirebaseService/auth.service.dart';
+import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
+import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
+import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
+import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/constants/style.dart';
+import 'package:clicks_outlet/main.dart';
+import 'package:clicks_outlet/model/user_details.dart';
+import 'package:clicks_outlet/utils/Utils.dart';
+import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
