@@ -1,17 +1,58 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:clicksoutlet/main.dart';
 import 'package:clicksoutlet/model/click.model.dart';
+import 'package:clicksoutlet/utils/shared_preferrences.util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class ImageCollectionService {
   final collectionReference =
       FirebaseFirestore.instance.collection(config.imageCollection);
+  static String trendingImgPrefkey = 'trendingImage';
+
+  Future<List<ImageModel>> getImages({bool isRefresh = false}) async {
+    List<ImageModel> imageList = [];
+    Map<String, dynamic> imagesFromSp =
+        PreferenceUtils.getJson(ImageCollectionService.trendingImgPrefkey);
+    List<ImageModel> cacheImageList = [];
+
+    if (imagesFromSp['images'] is List) {
+      imagesFromSp['images'].forEach((t) {
+        cacheImageList.add(ImageModel.fromMap(map: t));
+      });
+    }
+
+    if (!isRefresh || cacheImageList.isEmpty) {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await collectionReference.limit(25).get();
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> document
+          in querySnapshot.docs) {
+        imageList.add(ImageModel.fromMap(map: document.data()));
+      }
+
+      if (imageList.isNotEmpty) {
+        List<Map> imageListMap = [];
+
+        for (ImageModel img in imageList) {
+          imageListMap.add(img.toMap());
+        }
+
+        await PreferenceUtils.setString(
+            ImageCollectionService.trendingImgPrefkey,
+            jsonEncode({'images': imageListMap}));
+      } else {
+        imageList = cacheImageList;
+      }
+    }
+
+    return imageList;
+  }
 
   Future<bool> addImage(ImageModel imageModel) async {
     try {
@@ -25,10 +66,6 @@ class ImageCollectionService {
           "#####################################Operation Failed#############################################");
     }
     return false;
-  }
-
-  Future<QuerySnapshot<Map<String, dynamic>>> getImages() async {
-    return collectionReference.get();
   }
 
   Future<void> downloadAndSaveImage(String imageUrl) async {
