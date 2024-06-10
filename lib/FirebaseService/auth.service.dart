@@ -36,7 +36,7 @@ class AuthSevrvices {
 
   static Future<bool> signOut() async {
     try {
-      PreferenceUtils.clear();
+      SharedPreference.clear();
       await FirebaseAuth.instance.signOut();
       return true;
     } on Exception catch (_) {

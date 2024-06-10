@@ -1,6 +1,8 @@
 import 'package:clicks_outlet/View/screens/home.view.dart';
 import 'package:clicks_outlet/config/config.dart';
 import 'package:clicks_outlet/firebase_options.dart';
+import 'package:clicks_outlet/model/package.model.dart';
+import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,14 @@ Future<void> main() async {
   );
 
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  //_createNotificationChannel(id, name, description)
+  await SharedPreference.init();
+
+  try {
+    PackageInfoModel.init();
+  } catch (e) {
+    debugPrint("Package Info Error : $e");
+  }
+
   runApp(const MyApp());
 }
 

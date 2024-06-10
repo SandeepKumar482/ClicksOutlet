@@ -43,11 +43,13 @@ class UserDetailsModel {
   }
 
   factory UserDetailsModel.fromSP() {
-    Map<String, dynamic> data = PreferenceUtils.getJson(UserDetailsModel.spKey);
+    Map<String, dynamic> data =
+        SharedPreference.getJson(key: UserDetailsModel.spKey);
     return UserDetailsModel.fromMap(map: data);
   }
 
   Future<bool> setToSP() async {
-    return PreferenceUtils.setJson(UserDetailsModel.spKey, toMap());
+    return SharedPreference.setJson(
+        key: UserDetailsModel.spKey, value: toMap());
   }
 }
