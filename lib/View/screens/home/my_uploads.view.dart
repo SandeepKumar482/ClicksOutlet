@@ -10,12 +10,13 @@ import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MyUploads extends StatefulWidget {
   const MyUploads({super.key});
@@ -86,7 +87,19 @@ class _MyUploadsState extends State<MyUploads> {
   }
 
   Future<void> selectAnduploadImage() async {
-    PermissionStatus status = await Permission.photos.status;
+    PermissionStatus status;
+
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        status = await Permission.storage.status;
+      } else {
+        status = await Permission.photos.status;
+      }
+    } else {
+      status = await Permission.photos.status;
+    }
+
     if (status.isGranted) {
       XFile? selectedImage =
           await _picker.pickImage(source: ImageSource.gallery);
@@ -267,6 +280,7 @@ class _MyUploadsState extends State<MyUploads> {
 
 class _UserProfile extends StatelessWidget {
   final UserDetailsModel userDetailsModel;
+
   const _UserProfile({required this.userDetailsModel});
 
   @override
