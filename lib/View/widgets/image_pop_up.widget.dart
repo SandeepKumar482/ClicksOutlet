@@ -1,12 +1,14 @@
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
+import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
 import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {
   final String? imageUrl;
+  UserCollectionService userCollectionService = UserCollectionService();
 
-  const ImageDialog({super.key, required this.imageUrl});
+  ImageDialog({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class ImageDialog extends StatelessWidget {
                         icon: const Icon(Icons.download),
                         onPressed: () async {
                           // Add your download logic here.
+
                           try {
                             await ImageCollectionService()
                                 .downloadAndSaveImage(imageUrl!);
@@ -61,12 +64,12 @@ class ImageDialog extends StatelessWidget {
                           }
                         },
                       ),
-                      IconButton(
+                      /*  IconButton(
                         icon: const Icon(Icons.share),
                         onPressed: () {
                           // Add your share logic here.
                         },
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

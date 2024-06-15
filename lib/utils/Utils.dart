@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:clicks_outlet/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,5 +48,13 @@ class Utils {
         ),
       ),
     );
+  }
+
+  static String generateRandomUserId(int length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final random = Random();
+    final result = String.fromCharCodes(Iterable.generate(
+        length, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
+    return result;
   }
 }

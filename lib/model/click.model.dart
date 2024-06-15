@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ImageModel {
-  final String? url;
+  final String url;
   final String? caption;
   final List<String?> tags;
   final String? userId;
