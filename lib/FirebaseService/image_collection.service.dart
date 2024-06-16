@@ -36,7 +36,8 @@ class ImageCollectionService {
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> document
           in querySnapshot.docs) {
-        imageList.add(ImageModel.fromMap(map: document.data()));
+        imageList.add(
+            ImageModel.fromMap(map: document.data(), imageId: document.id));
       }
 
       if (imageList.isNotEmpty) {
@@ -108,5 +109,39 @@ class ImageCollectionService {
     }
 
     return donwloadUrl;
+  }
+
+  Future<void> updateImageDetails(ImageModel imageModel) async {
+    if (imageModel != null) {
+      try {
+        final DocumentReference documentReference =
+            collectionReference.doc(imageModel.imageId);
+        await documentReference.update(imageModel.toMap());
+        print('Document updated successfully!');
+      } catch (e) {
+        print('Error updating document: $e');
+      }
+    }
+  }
+
+  Future<ImageModel?> getDocumentById(String documentId) async {
+    final DocumentReference<Map<String, dynamic>> documentReference =
+        collectionReference.doc(documentId);
+
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await documentReference.get();
+      if (documentSnapshot.exists) {
+        ImageModel imageModel = ImageModel.fromMap(
+            map: documentSnapshot.data(), imageId: documentId);
+        return imageModel;
+      } else {
+        print('Document does not exist!');
+        return null; // Return the snapshot even if it doesn't exist
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      rethrow; // Rethrow the error for further handling
+    }
   }
 }

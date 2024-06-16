@@ -51,8 +51,7 @@ class ImagesGrid extends StatelessWidget {
                             await showDialog(
                               context: context,
                               builder: (_) => ImageDialog(
-                                imageUrl: image.url,
-                              ),
+                                  imageUrl: image.url, imageId: image.imageId),
                             );
                           },
                           child: Stack(children: [
@@ -60,9 +59,7 @@ class ImagesGrid extends StatelessWidget {
                               // Give each item a random background color
                               //color: Colors.grey,
                               key: ValueKey(imagesList[index].url),
-                              child: ImageDTO(
-                                imageUrl: image.url,
-                              ),
+                              child: ImageDTO(imageUrl: image.url),
                             ),
                             Positioned(
                               bottom: 15,

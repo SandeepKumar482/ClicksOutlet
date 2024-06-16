@@ -7,23 +7,31 @@ class ImageModel {
   final String? userId;
   final String? userName;
   final int? likes;
+  final String? imageId;
+  final List<String?>? likedBy;
 
-  ImageModel(
-      {required this.url,
-      required this.userId,
-      this.userName,
-      this.caption,
-      this.tags = const [],
-      this.likes});
+  ImageModel({
+    required this.url,
+    required this.userId,
+    this.userName,
+    this.caption,
+    this.tags = const [],
+    this.likes = 0,
+    this.imageId,
+    this.likedBy,
+  });
 
-  static ImageModel fromMap({required Map<dynamic, dynamic>? map}) {
+  static ImageModel fromMap(
+      {required Map<dynamic, dynamic>? map, String? imageId}) {
     return ImageModel(
-      url: map?['url'],
-      caption: map?['caption'],
-      userId: map?['user_id'],
-      userName: map?['user_name'],
-      likes: map?['likes'],
-    );
+        url: map?['url'],
+        caption: map?['caption'],
+        userId: map?['user_id'],
+        userName: map?['user_name'],
+        likes: map?['likes'],
+        imageId: imageId /*,
+        likedBy: map?['likedBy']*/
+        );
   }
 
   Map<String, dynamic> toMap() {
@@ -33,7 +41,8 @@ class ImageModel {
       'tags': tags,
       'user_id': userId,
       'user_name': userName,
-      'likes': likes
+      'likes': likes,
+      'likedBy': likedBy
     };
   }
 
@@ -41,8 +50,8 @@ class ImageModel {
       {required List<QueryDocumentSnapshot<Map<String, dynamic>>>? docsList}) {
     List<ImageModel> list = [];
     if (docsList != null && docsList.isNotEmpty) {
-      for (var dataObj in docsList) {
-        list.add(ImageModel.fromMap(map: dataObj.data() as Map));
+      for (QueryDocumentSnapshot<Map<String, dynamic>> dataObj in docsList) {
+        list.add(ImageModel.fromMap(map: dataObj.data(), imageId: dataObj.id));
       }
     }
     return list;
