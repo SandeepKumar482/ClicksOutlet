@@ -2,6 +2,7 @@ import 'package:clicks_outlet/View/screens/home/liked.view.dart';
 import 'package:clicks_outlet/View/screens/home/my_uploads.view.dart';
 import 'package:clicks_outlet/View/screens/home/trending_clicks.view.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
+import 'package:clicks_outlet/View/widgets/side_draswer.widget.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,7 @@ class _HomeState extends State<Home> {
             word2: "Outlet",
           ),
         ),
+        drawer: const SideDrawer(),
         bottomNavigationBar: CurvedNavigationBar(
           height: 64,
           color: const Color(0xffB6F2AF),

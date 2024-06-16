@@ -20,7 +20,7 @@ class ImageCollectionService {
         : ImageCollectionService.trendingImgCachekey;
     List<ImageModel> imageList = [];
 
-    Map<String, dynamic> imagesFromSp = PreferenceUtils.getJson(cacheKey);
+    Map<String, dynamic> imagesFromSp = SharedPreference.getJson(key: cacheKey);
     List<ImageModel> cacheImageList = [];
 
     if (imagesFromSp['images'] is List) {
@@ -47,7 +47,8 @@ class ImageCollectionService {
           imageListMap.add(img.toMap());
         }
 
-        await PreferenceUtils.setJson(cacheKey, {'images': imageListMap});
+        await SharedPreference.setJson(
+            key: cacheKey, value: {'images': imageListMap});
       } else {
         imageList = cacheImageList;
       }
