@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
@@ -12,9 +13,7 @@ import 'package:clicks_outlet/utils/Utils.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class Auth extends StatefulWidget {
@@ -94,9 +93,7 @@ class __AuthModelState extends State<_AuthModel> {
               prefixIcon: const Icon(Icons.phone_android_rounded),
               readOnly: currentAuthState == AuthState.sendingVrificationCode,
               validator: (phoneNumber) {
-                if (phoneNumber != null &&
-                    phoneNumber.length == 10 &&
-                    phoneNumber.isPhoneNumber) {
+                if (phoneNumber != null && phoneNumber.length == 10) {
                   return null;
                 } else {
                   return "Enter a Valid Phone Number";
@@ -195,8 +192,7 @@ class __AuthModelState extends State<_AuthModel> {
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } catch (e) {
-      e.printError(info: "Error in authentication--");
-      Utils.getSnacbar("Authentication", e.toString());
+      debugPrint("Error in authentication--");
     }
   }
 
@@ -210,7 +206,7 @@ class __AuthModelState extends State<_AuthModel> {
           context: context, userCredential: userCredential);
 
       if (userData != null) {
-        Get.back();
+        Ax.goBack();
       } else {
         setState(() {
           User user = userCredential!.user!;
@@ -301,7 +297,7 @@ class __OTPModelState extends State<_OTPModel> {
           context: context, userCredential: userCredential);
 
       if (userData != null) {
-        Get.back();
+        Ax.goBack();
       } else {
         setState(() {
           User user = userCredential.user!;
@@ -356,22 +352,9 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
           children: <Widget>[
             InkWell(
                 onTap: () async {
-                  PermissionStatus status = await Permission.photos.status;
-                  if (status.isGranted) {
-                    profileImage =
-                        await _picker.pickImage(source: ImageSource.gallery);
-                    setState(() {});
-                  } else {
-                    PermissionStatus requestStatus =
-                        await Permission.photos.request();
-                    if (requestStatus.isGranted) {
-                    } else {
-                      FloatingMsg.show(
-                          context: context,
-                          msg: "Please Allow Photos First",
-                          msgType: MsgType.error);
-                    }
-                  }
+                  profileImage =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  setState(() {});
                 },
                 child: CircleAvatar(
                   backgroundColor: Colors.greenAccent,
@@ -472,15 +455,15 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
         bool isAdded =
             await UserCollectionService().addUpdateData(userDetailsModel);
         if (isAdded) {
-          Get.back();
+          Ax.goBack();
         } else {
           setState(() {
             isSubmitting = false;
           });
         }
       } catch (e) {
-        e.printError(info: "Error in authentication--");
-        Get.back();
+        debugPrint("Error in authentication--");
+        Ax.goBack();
         FloatingMsg.show(
             context: context,
             msg: "Something Went Wrong",

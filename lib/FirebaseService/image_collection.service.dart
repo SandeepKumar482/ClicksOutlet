@@ -113,15 +113,13 @@ class ImageCollectionService {
   }
 
   Future<void> updateImageDetails(ImageModel imageModel) async {
-    if (imageModel != null) {
-      try {
-        final DocumentReference documentReference =
-            collectionReference.doc(imageModel.imageId);
-        await documentReference.update(imageModel.toMap());
-        print('Document updated successfully!');
-      } catch (e) {
-        print('Error updating document: $e');
-      }
+    try {
+      final DocumentReference documentReference =
+          collectionReference.doc(imageModel.imageId);
+      await documentReference.update(imageModel.toMap());
+      debugPrint('Document updated successfully!');
+    } catch (e) {
+      debugPrint('Error updating document: $e');
     }
   }
 
@@ -137,11 +135,11 @@ class ImageCollectionService {
             map: documentSnapshot.data(), imageId: documentId);
         return imageModel;
       } else {
-        print('Document does not exist!');
+        debugPrint('Document does not exist!');
         return null; // Return the snapshot even if it doesn't exist
       }
     } catch (e) {
-      print('Error getting document: $e');
+      debugPrint('Error getting document: $e');
       rethrow; // Rethrow the error for further handling
     }
   }

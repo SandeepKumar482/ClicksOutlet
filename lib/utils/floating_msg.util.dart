@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 enum MsgType { success, error, warning }
 
 class FloatingMsg {
+  static BuildContext? appContext;
+
   static void show(
       {required BuildContext context,
       required String? msg,
@@ -40,7 +42,9 @@ class FloatingMsg {
         ),
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (appContext != null) {
+        ScaffoldMessenger.of(appContext!).showSnackBar(snackBar);
+      }
     }
   }
 }

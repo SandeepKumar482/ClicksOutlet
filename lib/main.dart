@@ -1,12 +1,13 @@
-import 'package:clicks_outlet/View/screens/home.view.dart';
+import 'package:apex_infinity/apex_infinity.app.dart';
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:clicks_outlet/config/config.dart';
 import 'package:clicks_outlet/firebase_options.dart';
 import 'package:clicks_outlet/model/package.model.dart';
+import 'package:clicks_outlet/routers/router.dart';
 import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 final Config config = Config(
     userCollection: 'Dev Users',
@@ -22,6 +23,11 @@ Future<void> main() async {
 
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   await SharedPreference.init();
+
+  Ax.httpRequest.configRequest(
+    baseUrl: "http://192.168.253.134:5050",
+    headers: {'Content-Type': 'application/json'},
+  );
 
   try {
     PackageInfoModel.init();
@@ -40,14 +46,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseMessaging.instance
         .getToken()
-        .then((value) => printInfo(info: "token---->$value"));
-    return GetMaterialApp(
-        title: 'Clicks Outlet',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green,
-        ),
-        home: const Home());
+        .then((value) => debugPrint("token---->$value"));
+
+    return AxApp(
+      routeResolver: routeResolver,
+      themeData: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Colors.green,
+      ),
+    );
   }
 }

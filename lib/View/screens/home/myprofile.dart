@@ -7,7 +7,6 @@ import 'package:clicks_outlet/utils/Utils.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class MyProfile extends StatelessWidget {
   MyProfile({super.key});
@@ -66,21 +65,7 @@ class MyProfile extends StatelessWidget {
                 ),
               ),
               onTap: () async {
-                PermissionStatus status = await Permission.photos.status;
-                if (status.isGranted) {
-                  profileImage =
-                      await _picker.pickImage(source: ImageSource.gallery);
-                } else {
-                  PermissionStatus requestStatus =
-                      await Permission.photos.request();
-                  if (requestStatus.isGranted) {
-                  } else {
-                    FloatingMsg.show(
-                        context: context,
-                        msg: "Please Allow Photos First",
-                        msgType: MsgType.error);
-                  }
-                }
+                await _picker.pickImage(source: ImageSource.gallery);
               },
             ),
             SizedBox(height: deviceHeight * 0.015),
@@ -101,7 +86,10 @@ class MyProfile extends StatelessWidget {
                 prefixIcon: const Icon(Icons.label_important_outline),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    Utils.getSnacbar("OOPS!!", "Please Enter a Valid Name");
+                    FloatingMsg.show(
+                        context: context,
+                        msg: "OOPS!! Please Enter a Valid Name",
+                        msgType: MsgType.error);
                     return ' ';
                   } else {
                     return null;
@@ -118,7 +106,10 @@ class MyProfile extends StatelessWidget {
                 prefixIcon: const Icon(Icons.email_outlined),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    Utils.getSnacbar("OOPS!!", "Please Enter a Valid Name");
+                    FloatingMsg.show(
+                        context: context,
+                        msg: "OOPS!! Please Enter a Valid Name",
+                        msgType: MsgType.error);
                     return ' ';
                   } else {
                     return null;
@@ -135,7 +126,10 @@ class MyProfile extends StatelessWidget {
                 prefixIcon: const Icon(Icons.phone_android_outlined),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    Utils.getSnacbar("OOPS!!", "Please Enter a Valid Name");
+                    FloatingMsg.show(
+                        context: context,
+                        msg: "OOPS!! Please Enter a Valid Name",
+                        msgType: MsgType.error);
                     return ' ';
                   } else {
                     return null;

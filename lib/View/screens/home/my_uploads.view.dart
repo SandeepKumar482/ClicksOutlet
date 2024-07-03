@@ -1,22 +1,18 @@
 import 'dart:io';
-
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
-import 'package:clicks_outlet/View/screens/home.view.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class MyUploads extends StatefulWidget {
   const MyUploads({super.key});
@@ -87,41 +83,15 @@ class _MyUploadsState extends State<MyUploads> {
   }
 
   Future<void> selectAnduploadImage() async {
-    PermissionStatus status;
+    XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if (androidInfo.version.sdkInt <= 32) {
-        status = await Permission.storage.status;
-      } else {
-        status = await Permission.photos.status;
-      }
+    if (selectedImage != null) {
+      openAddClickBottomSheet(context: context, imagePath: selectedImage.path);
     } else {
-      status = await Permission.photos.status;
-    }
-
-    if (status.isGranted) {
-      XFile? selectedImage =
-          await _picker.pickImage(source: ImageSource.gallery);
-
-      if (selectedImage != null) {
-        openAddClickBottomSheet(
-            context: context, imagePath: selectedImage.path);
-      } else {
-        FloatingMsg.show(
-            context: context,
-            msg: "Please Select A Image",
-            msgType: MsgType.error);
-      }
-    } else {
-      PermissionStatus requestStatus = await Permission.photos.request();
-      if (requestStatus.isGranted) {
-      } else {
-        FloatingMsg.show(
-            context: context,
-            msg: "Please Allow Photos First",
-            msgType: MsgType.error);
-      }
+      FloatingMsg.show(
+          context: context,
+          msg: "Please Select A Image",
+          msgType: MsgType.error);
     }
   }
 
@@ -220,7 +190,7 @@ class _MyUploadsState extends State<MyUploads> {
                                       ? MsgType.success
                                       : MsgType.error,
                                 );
-                                Get.back();
+                                Ax.goBack();
 
                                 break;
                               case TaskState.canceled:
@@ -233,7 +203,7 @@ class _MyUploadsState extends State<MyUploads> {
                                     msg:
                                         "Something went Wrong While Uploading!!!",
                                     msgType: MsgType.error);
-                                Get.back();
+                                Ax.goBack();
 
                                 break;
                             }
@@ -308,8 +278,8 @@ class _UserProfile extends StatelessWidget {
             ElevatedButton(
                 onPressed: () async {
                   await AuthSevrvices.signOut();
-                  Get.back();
-                  Get.to(const Home());
+                  Ax.goBack();
+                  // Get.to(const Home());
                 },
                 child: const Text("Logout"))
           ],
