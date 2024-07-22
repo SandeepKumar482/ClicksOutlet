@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
@@ -21,24 +22,18 @@ class ImageCollectionService {
     List<ImageModel> imageList = [];
 
     Map<String, dynamic> imagesFromSp = SharedPreference.getJson(key: cacheKey);
-    List<ImageModel> cacheImageList = [];
+    List<ImageModel> cacheImageList = ImageModel.getImagesList(list: imagesFromSp['images']);
 
-    if (imagesFromSp['images'] is List) {
-      imagesFromSp['images'].forEach((t) {
-        cacheImageList.add(ImageModel.fromMap(map: t));
-      });
-    }
 
     if (!isRefresh || cacheImageList.isEmpty) {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = userId != null
-          ? await collectionReference.where('user_id', isEqualTo: userId).get()
-          : await collectionReference.limit(25).get();
 
-      for (QueryDocumentSnapshot<Map<String, dynamic>> document
-          in querySnapshot.docs) {
-        imageList.add(
-            ImageModel.fromMap(map: document.data(), imageId: document.id));
+      final Map<String,dynamic> res= await Ax.httpRequest.get(url: "/images/");
+
+      if(res['status']) {
+imageList = ImageModel.getImagesList(list: res['res']['data']['images']);
+print(imageList);
       }
+
 
       if (imageList.isNotEmpty) {
         List<Map> imageListMap = [];
@@ -115,7 +110,7 @@ class ImageCollectionService {
   Future<void> updateImageDetails(ImageModel imageModel) async {
     try {
       final DocumentReference documentReference =
-          collectionReference.doc(imageModel.imageId);
+          collectionReference.doc();
       await documentReference.update(imageModel.toMap());
       debugPrint('Document updated successfully!');
     } catch (e) {
@@ -132,7 +127,7 @@ class ImageCollectionService {
           await documentReference.get();
       if (documentSnapshot.exists) {
         ImageModel imageModel = ImageModel.fromMap(
-            map: documentSnapshot.data(), imageId: documentId);
+            map: documentSnapshot.data());
         return imageModel;
       } else {
         debugPrint('Document does not exist!');

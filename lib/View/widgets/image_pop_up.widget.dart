@@ -28,10 +28,7 @@ class _ImageDialogState extends State<ImageDialog> {
   void fetch() async {
     ImageModel? imageModel =
         await imageCollectionService.getDocumentById(widget.imageId!);
-    if (imageModel!.likedBy != null &&
-        imageModel.likedBy!.contains(userDetailsModel.id)) {
-      isLiked = true;
-    }
+
   }
 
   @override
@@ -132,21 +129,21 @@ class _ImageDialogState extends State<ImageDialog> {
       ImageModel? imageModel =
           await imageCollectionService.getDocumentById(imageId);
       if (imageModel != null) {
-        int? likes = imageModel.likes;
-        likes ??= 0;
-        List<String?>? likedBy = imageModel.likedBy;
-        List<String?> updatedLikedBy = likedBy?.toList() ?? [];
-        updatedLikedBy.add(userId);
-        ImageModel imageModel2 = ImageModel(
-            url: imageUrl!,
-            userId: imageModel.userId,
-            caption: imageModel.caption,
-            tags: imageModel.tags,
-            userName: imageModel.userName,
-            likes: likes + 1,
-            likedBy: updatedLikedBy,
-            imageId: imageId);
-        await imageCollectionService.updateImageDetails(imageModel2);
+        // int? likes = imageModel.likes;
+        // likes ??= 0;
+        // List<String?>? likedBy = imageModel.likedBy;
+        // List<String?> updatedLikedBy = likedBy?.toList() ?? [];
+        // updatedLikedBy.add(userId);
+        // ImageModel imageModel2 = ImageModel(
+        //     url: imageUrl!,
+        //     userId: imageModel.userId,
+        //     caption: imageModel.caption,
+        //     tags: imageModel.tags,
+        //     userName: imageModel.userName,
+        //     likes: likes + 1,
+        //     likedBy: updatedLikedBy,
+        //     imageId: imageId);
+        // await imageCollectionService.updateImageDetails(imageModel2);
         return true;
       }
     }
@@ -159,22 +156,22 @@ class _ImageDialogState extends State<ImageDialog> {
       ImageModel? imageModel =
           await imageCollectionService.getDocumentById(imageId);
       if (imageModel != null) {
-        int? likes = imageModel.likes;
-        List<String?>? likedBy = imageModel.likedBy;
-        List<String?> updatedLikedBy = likedBy?.toList() ?? [];
-        if (likedBy != null && likedBy.isNotEmpty && likedBy.contains(userId)) {
-          updatedLikedBy.remove(userId);
-        }
-        ImageModel imageModel2 = ImageModel(
-            url: imageUrl!,
-            userId: imageModel.userId,
-            caption: imageModel.caption,
-            tags: imageModel.tags,
-            userName: imageModel.userName,
-            likes: likes == null ? 0 : likes - 1,
-            likedBy: updatedLikedBy,
-            imageId: imageId);
-        await imageCollectionService.updateImageDetails(imageModel2);
+        // int? likes = imageModel.likes;
+        // List<String?>? likedBy = imageModel.likedBy;
+        // List<String?> updatedLikedBy = likedBy?.toList() ?? [];
+        // if (likedBy != null && likedBy.isNotEmpty && likedBy.contains(userId)) {
+        //   updatedLikedBy.remove(userId);
+        // }
+        // ImageModel imageModel2 = ImageModel(
+        //     url: imageUrl!,
+        //     userId: imageModel.userId,
+        //     caption: imageModel.caption,
+        //     tags: imageModel.tags,
+        //     userName: imageModel.userName,
+        //     likes: likes == null ? 0 : likes - 1,
+        //     likedBy: updatedLikedBy,
+        //     imageId: imageId);
+        // await imageCollectionService.updateImageDetails(imageModel2);
         return true;
       }
     }

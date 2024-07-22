@@ -27,15 +27,17 @@ class AxHttpRequest {
       finalHeaders.addAll(extraHeaders);
     }
 
-    Response res = await http.get(Uri.parse(fullUrl), headers: finalHeaders);
 
+    bool status = true;
     Map<String, dynamic> response = {};
     try {
+      Response res = await http.get(Uri.parse(fullUrl), headers: finalHeaders);
       response = jsonDecode(res.body);
     } catch (e) {
+      status = false;
       response['error'] = e.toString();
     }
 
-    return {"status": res.statusCode, "res": response};
+    return {"status": status, "res": response};
   }
 }

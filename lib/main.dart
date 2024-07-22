@@ -25,8 +25,11 @@ Future<void> main() async {
   await SharedPreference.init();
 
   Ax.httpRequest.configRequest(
-    baseUrl: "http://192.168.253.134:5050",
-    headers: {'Content-Type': 'application/json'},
+    baseUrl: "http://192.168.191.134:120",
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': 'adba4a4c24b866fa7a997f65009b0e255683f5f7',
+    },
   );
 
   try {

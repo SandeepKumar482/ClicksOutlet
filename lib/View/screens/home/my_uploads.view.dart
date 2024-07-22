@@ -171,10 +171,10 @@ class _MyUploadsState extends State<MyUploads> {
                                 UserDetailsModel userData =
                                     UserDetailsModel.fromSP();
                                 ImageModel imageModel = ImageModel(
-                                  userId: userData.id,
-                                  userName: userData.name,
-                                  url: imageUrl,
-                                  caption: caption.text,
+                                  uid: userData.id,
+                                  imageName: userData.name,
+                                  imageUrl: imageUrl,
+                                  captions: caption.text,
                                   tags: [tags.text],
                                 );
 
