@@ -9,6 +9,8 @@ class ImageModel {
   final String? userName;
   final String imageUrl;
   final String? imageName;
+  final double? width;
+  final double? height;
   final String? captions;
   final List<String?> tags;
   final int? likes;
@@ -20,6 +22,8 @@ class ImageModel {
     this.userName,
     required this.imageUrl,
     this.imageName,
+    this.width,
+    this.height,
     this.captions,
     this.tags = const [],
     this.likes = 0,
@@ -27,6 +31,7 @@ class ImageModel {
 
   factory ImageModel.fromMap({required dynamic map}) {
     if(map is Map) {
+      print(map);
      return ImageModel(
        mid: map['img_id'].toString(),
        uid: map['uid'].toString(),
@@ -34,6 +39,8 @@ class ImageModel {
        userName: map['user_name'],
        imageName: map['image_name'],
        imageUrl: map['image_url'] ?? config.previewImageUrl,
+       width: 250.0,
+       height: 250.0,
        captions: map['caption'],
        tags: getStringList(list: map['tags']),
        likes: map['likes']

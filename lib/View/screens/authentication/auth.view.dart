@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
@@ -190,6 +191,7 @@ class __AuthModelState extends State<_AuthModel> {
   }
 
   Future<void> _googleAuth() async {
+    GoogleAuthServices.signInWithGoogle();
     // TODO : Google Auth Implementation
   }
 }

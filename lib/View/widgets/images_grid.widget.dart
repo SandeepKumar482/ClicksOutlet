@@ -1,3 +1,4 @@
+import 'package:apex_infinity/image/network_image.dart';
 import 'package:clicks_outlet/View/widgets/image_dto.widget.dart';
 import 'package:clicks_outlet/View/widgets/image_pop_up.widget.dart';
 import 'package:clicks_outlet/View/widgets/my_search_bar.widget.dart';
@@ -54,7 +55,11 @@ class ImagesGrid extends StatelessWidget {
                         child: Stack(children: [
                           Card(
                             key: ValueKey(image.imageUrl),
-                            child: ImageDTO(imageUrl: image.imageUrl),
+                            child: AxNetworkImage(
+                              imageUrl: image.imageUrl,
+                              width: image.width,
+                              height: image.height,
+                            ),
                           ),
                           Positioned(
                             bottom: 15,
