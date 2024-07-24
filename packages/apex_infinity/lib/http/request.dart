@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:apex_infinity/http/response.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -21,7 +23,7 @@ class AxHttpRequest {
 
     AxHttpResponse response = AxHttpResponse(
       status: false,
-      statusCode: 500,
+      statusCode: 600,
     );
 
     final Uri uri = Uri.parse(url);
@@ -55,9 +57,83 @@ class AxHttpRequest {
       }
 
     } catch (e) {
-      response = AxHttpResponse(status: false, statusCode: 600);
+      response = AxHttpResponse(
+        status: false,
+        statusCode: 600,
+        msg: "enable to decode Response"
+      );
     }
 
     return response;
+  }
+
+  Future<AxHttpResponse> post({
+    required String url,
+    Map<String, dynamic> body = const {},
+    Map<String, String> extraHeaders = const {}
+  }) async {
+
+    AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
+
+    final Uri uri = Uri.parse(url);
+
+    final String fullUrl = "${_baseUrl ?? ""}${uri.path}";
+
+    Map<String, String> finalHeaders = _headers;
+
+    if (extraHeaders.isNotEmpty) {
+      finalHeaders.addAll(extraHeaders);
+    }
+
+    try {
+      MultipartRequest request = http.MultipartRequest('POST',Uri.parse(fullUrl));
+      request.headers.addAll(finalHeaders);
+      
+      Map<String, String> fields = {};
+      List<MultipartFile> files = [];
+      
+      for(var data in body.entries ){
+        if(data.value is File) {
+         files.add(await MultipartFile.fromPath(data.key,data.value.path));
+        } else {
+          fields.addAll({
+            data.key : data.value.toString()
+          });
+        }
+      }
+
+      request.files.addAll(files);
+      request.fields.addAll(fields);
+
+      final StreamedResponse res = await request.send();
+
+      final resData = await res.stream.bytesToString();
+
+      Map<String, dynamic> jsonResponse = jsonDecode(resData);
+
+      if(res.statusCode == 200) {
+        response = AxHttpResponse(
+            status: jsonResponse['status'] ?? false,
+            statusCode: jsonResponse['status_code'] ?? res.statusCode,
+            msg: jsonResponse['msg'],
+            data: jsonResponse['data']
+        );
+      } else {
+        response = AxHttpResponse(
+            status: false,
+            statusCode: res.statusCode,
+            msg: "Some Issue While Getting Data"
+        );
+      }
+    } catch (e) {
+      response = AxHttpResponse(
+        status: false,
+        statusCode: 600,
+        msg: "enable to decode Response"
+      );
+    }
+
+    return response;
+
   }
 }

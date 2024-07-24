@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class AxNetworkImage extends StatelessWidget {
 
-  final String imageUrl;
+  final String? imageUrl;
   final double borderRadius;
 
   final BoxFit boxFit;
@@ -13,7 +13,7 @@ class AxNetworkImage extends StatelessWidget {
   final double? width;
 
   final Widget? placeHolderWidget;
-  final Widget? errorHolderWidget;
+  final Widget? errorWidget;
 
   const AxNetworkImage({
     required this.imageUrl,
@@ -25,7 +25,7 @@ class AxNetworkImage extends StatelessWidget {
     this.width,
 
     this.placeHolderWidget,
-    this.errorHolderWidget
+    this.errorWidget
   });
 
   @override
@@ -33,9 +33,9 @@ class AxNetworkImage extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: CachedNetworkImage(
+      child:  CachedNetworkImage(
         // Use CachedNetworkImage for efficient image loading
-        imageUrl: imageUrl,
+        imageUrl: imageUrl ?? "",
         placeholder: (context, url) {
           return placeHolderWidget ?? AxShimmer(
             child: AxShimmerLoader(
@@ -48,7 +48,7 @@ class AxNetworkImage extends StatelessWidget {
           );
         },
         errorWidget: (context, url, error) {
-          return errorHolderWidget ?? SizedBox(
+          return errorWidget ?? SizedBox(
             height: height,
             width: width,
             child: Icon(

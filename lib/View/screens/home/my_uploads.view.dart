@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:apex_infinity/apex_infinity.dart';
+import 'package:apex_infinity/http/response.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
@@ -139,7 +141,20 @@ class _MyUploadsState extends State<MyUploads> {
                     ),
                     FilledButton(
                       onPressed: () async {
-                        // TODO: Add Image
+                        AxHttpResponse response = await Ax.httpRequest.post(
+                          url: '/images/',
+                          body: {
+                            'image' : File(imagePath),
+                            'caption' : caption.text,
+                            'tags' : [tags.text]
+                          }
+                        );
+
+                        if(response.status) {
+                          Ax.goBack();
+                        } else {
+                          FloatingMsg.show(context: context, msg: response.msg, msgType: MsgType.error);
+                        }
                       },
                       child: const Text("Upload"),
                     ),

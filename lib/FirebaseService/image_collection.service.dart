@@ -46,7 +46,7 @@ class ImageCollectionService {
     return imageList;
   }
 
-  Future<void> downloadAndSaveImage(String imageUrl) async {
+  Future<void> downloadAndSaveImage(String? imageUrl) async {
     // final response = await http.get(Uri.parse(imageUrl));
     // if (response.statusCode == 200) {
     //   final appDir = await getApplicationDocumentsDirectory();

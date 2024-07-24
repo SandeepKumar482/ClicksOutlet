@@ -20,7 +20,7 @@ class ImageDialog extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(
-                image: NetworkImage(imageModel.imageUrl),
+                image: NetworkImage(imageModel.imageUrl!),
                 fit: BoxFit.cover,
               ),
             ),

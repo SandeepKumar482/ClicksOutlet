@@ -13,3 +13,13 @@ class Ax {
 
   static final AxHttpRequest httpRequest = AxHttpRequest();
 }
+
+extension AxE on dynamic {
+  double? toDouble(){
+    try {
+      return double.parse(this.toString());
+    } on Exception {
+      return null;
+    }
+  }
+}

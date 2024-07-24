@@ -7,7 +7,7 @@ class ImageModel {
   final String? uid;
   final String? labelName;
   final String? userName;
-  final String imageUrl;
+  final String? imageUrl;
   final String? imageName;
   final double? width;
   final double? height;
@@ -31,16 +31,15 @@ class ImageModel {
 
   factory ImageModel.fromMap({required dynamic map}) {
     if(map is Map) {
-      print(map);
      return ImageModel(
        mid: map['img_id'].toString(),
        uid: map['uid'].toString(),
        labelName: map['label_name'],
        userName: map['user_name'],
        imageName: map['image_name'],
-       imageUrl: map['image_url'] ?? config.previewImageUrl,
-       width: 250.0,
-       height: 250.0,
+       imageUrl: map['image_url'],
+       width: map['width']?.toDouble(),
+       height: map['height']?.toDouble(),
        captions: map['caption'],
        tags: getStringList(list: map['tags']),
        likes: map['likes']
