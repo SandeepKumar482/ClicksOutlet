@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apex_infinity/http/response.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -13,10 +14,16 @@ class AxHttpRequest {
     _headers = headers;
   }
 
-  Future<Map<String, dynamic>> get(
-      {required String url,
-      Map<String, String> params = const {},
-      Map<String, String> extraHeaders = const {}}) async {
+  Future<AxHttpResponse> get(
+    {required String url,
+    Map<String, String> params = const {},
+    Map<String, String> extraHeaders = const {}}) async {
+
+    AxHttpResponse response = AxHttpResponse(
+      status: false,
+      statusCode: 500,
+    );
+
     final Uri uri = Uri.parse(url);
 
     final String fullUrl = "${_baseUrl ?? ""}${uri.path}";
@@ -27,17 +34,30 @@ class AxHttpRequest {
       finalHeaders.addAll(extraHeaders);
     }
 
-
-    bool status = true;
-    Map<String, dynamic> response = {};
     try {
       Response res = await http.get(Uri.parse(fullUrl), headers: finalHeaders);
-      response = jsonDecode(res.body);
+
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+
+      if(res.statusCode == 200) {
+        response = AxHttpResponse(
+          status: jsonResponse['status'] ?? false,
+          statusCode: jsonResponse['status_code'] ?? res.statusCode,
+          msg: jsonResponse['msg'],
+          data: jsonResponse['data']
+        );
+      } else {
+        response = AxHttpResponse(
+          status: false,
+          statusCode: res.statusCode,
+          msg: "Some Issue While Getting Data"
+        );
+      }
+
     } catch (e) {
-      status = false;
-      response['error'] = e.toString();
+      response = AxHttpResponse(status: false, statusCode: 600);
     }
 
-    return {"status": status, "res": response};
+    return response;
   }
 }

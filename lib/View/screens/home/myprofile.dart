@@ -3,17 +3,24 @@ import 'dart:io';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
-import 'package:clicks_outlet/utils/Utils.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class MyProfile extends StatelessWidget {
-  MyProfile({super.key});
+class MyProfile extends StatefulWidget {
+  const MyProfile({super.key});
 
+  @override
+  State<MyProfile> createState() => _MyProfileState();
+}
+
+class _MyProfileState extends State<MyProfile> {
   final ImagePicker _picker = ImagePicker();
+
   XFile? profileImage;
+
   TextEditingController name = TextEditingController();
+
   TextEditingController userName = TextEditingController();
 
   @override

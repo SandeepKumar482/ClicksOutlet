@@ -5,12 +5,9 @@ import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
-import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -104,7 +101,6 @@ class _MyUploadsState extends State<MyUploads> {
 
     final TextEditingController caption = TextEditingController();
     final TextEditingController tags = TextEditingController();
-    double? uploadPercentage;
 
     return showModalBottomSheet(
         isScrollControlled: true,
@@ -112,140 +108,52 @@ class _MyUploadsState extends State<MyUploads> {
         useSafeArea: true,
         context: context,
         builder: (ctx) {
-          return StatefulBuilder(builder: (context, bottomSheetSate) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: Image.file(file),
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      InputWidget(
-                        label: "Caption",
-                        controller: caption,
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      InputWidget(
-                        label: "Tags",
-                        controller: tags,
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      if (uploadPercentage != null)
-                        LinearProgressIndicator(
-                          value: uploadPercentage,
-                        ),
-                      FilledButton(
-                        onPressed: () async {
-                          final UploadTask uploadTask =
-                              await uploadImage(file: file);
-
-                          uploadTask.snapshotEvents
-                              .listen((TaskSnapshot snapshotEvents) async {
-                            switch (snapshotEvents.state) {
-                              case TaskState.paused:
-                                uploadPercentage = null;
-                                break;
-                              case TaskState.running:
-                                bottomSheetSate(() {
-                                  uploadPercentage =
-                                      snapshotEvents.bytesTransferred /
-                                          snapshotEvents.totalBytes;
-                                });
-                                break;
-                              case TaskState.success:
-                                final String imageUrl =
-                                    await snapshotEvents.ref.getDownloadURL();
-
-                                UserDetailsModel userData =
-                                    UserDetailsModel.fromSP();
-                                ImageModel imageModel = ImageModel(
-                                  uid: userData.id,
-                                  imageName: userData.name,
-                                  imageUrl: imageUrl,
-                                  captions: caption.text,
-                                  tags: [tags.text],
-                                );
-
-                                bool isUploaded = await ImageCollectionService()
-                                    .addImage(imageModel);
-
-                                FloatingMsg.show(
-                                  context: context,
-                                  msg: isUploaded
-                                      ? "Image Uploaded"
-                                      : "Unable to Upload Image",
-                                  msgType: isUploaded
-                                      ? MsgType.success
-                                      : MsgType.error,
-                                );
-                                Ax.goBack();
-
-                                break;
-                              case TaskState.canceled:
-                                uploadPercentage = null;
-                                break;
-                              case TaskState.error:
-                                uploadPercentage = null;
-                                FloatingMsg.show(
-                                    context: context,
-                                    msg:
-                                        "Something went Wrong While Uploading!!!",
-                                    msgType: MsgType.error);
-                                Ax.goBack();
-
-                                break;
-                            }
-                          });
-                        },
-                        child: const Text("Upload"),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      )
-                    ],
-                  ),
+          return SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image.file(file),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    InputWidget(
+                      label: "Caption",
+                      controller: caption,
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    InputWidget(
+                      label: "Tags",
+                      controller: tags,
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    FilledButton(
+                      onPressed: () async {
+                        // TODO: Add Image
+                      },
+                      child: const Text("Upload"),
+                    ),
+                    const SizedBox(
+                      height: 25.0,
+                    )
+                  ],
                 ),
               ),
-            );
-          });
+            ),
+          );
         });
   }
 
-  Future<UploadTask> uploadImage({required File file}) async {
-    UploadTask uploadTask;
-
-    String fileName = DateTime.now().toString();
-    // Create a Reference to the file
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child(config.imageFolder)
-        .child(fileName);
-
-    final metadata = SettableMetadata(
-      contentType: 'image/jpeg',
-      customMetadata: {'picked-file-path': file.path},
-    );
-
-    if (kIsWeb) {
-      uploadTask = ref.putData(await file.readAsBytes(), metadata);
-    } else {
-      uploadTask = ref.putFile(File(file.path), metadata);
-    }
-
-    return uploadTask;
-  }
 }
 
 class _UserProfile extends StatelessWidget {
@@ -265,9 +173,7 @@ class _UserProfile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: NetworkImage(
-                      userDetailsModel.profilePicture ??
-                          config.imagePreviewUrl),
+                  backgroundImage: NetworkImage(userDetailsModel.profilePicture),
                 ),
                 const SizedBox(
                   width: 25.0,
@@ -277,7 +183,7 @@ class _UserProfile extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  await AuthSevrvices.signOut();
+                  await GoogleAuthServices.signOut();
                   Ax.goBack();
                   // Get.to(const Home());
                 },

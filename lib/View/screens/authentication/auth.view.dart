@@ -1,16 +1,9 @@
 import 'dart:io';
 
-import 'package:apex_infinity/apex_infinity.dart';
-import 'package:clicks_outlet/FirebaseService/auth.service.dart';
-import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
-import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
-import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/user_details.dart';
-import 'package:clicks_outlet/utils/Utils.dart';
-import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -197,35 +190,7 @@ class __AuthModelState extends State<_AuthModel> {
   }
 
   Future<void> _googleAuth() async {
-    setState(() {
-      currentAuthState = AuthState.googleAuthentication;
-    });
-    UserCredential? userCredential = await AuthSevrvices.signInWithGoogle();
-    if (userCredential?.user != null) {
-      UserDetailsModel? userData = await AuthSevrvices.validateUser(
-          context: context, userCredential: userCredential);
-
-      if (userData != null) {
-        Ax.goBack();
-      } else {
-        setState(() {
-          User user = userCredential!.user!;
-          _userDetailsModel = UserDetailsModel(
-            id: user.uid,
-            email: userCredential.user?.email,
-            phone: userCredential.user?.phoneNumber,
-            name: user.displayName,
-            userName: Utils.generateUserName(username: user.email),
-            profilePicture: user.photoURL,
-          );
-          currentAuthState = AuthState.userDetailsFill;
-        });
-      }
-    } else {
-      setState(() {
-        currentAuthState = AuthState.auth;
-      });
-    }
+    // TODO : Google Auth Implementation
   }
 }
 
@@ -285,38 +250,7 @@ class __OTPModelState extends State<_OTPModel> {
   }
 
   Future<void> _verifyOTP() async {
-    setState(() {
-      currentOTPSatet = OTPState.verifying;
-    });
-
-    UserCredential? userCredential = await AuthSevrvices.verifyOTP(
-        verificationId: widget.verificationId, smsCode: _otpController.text);
-
-    if (userCredential != null) {
-      UserDetailsModel? userData = await AuthSevrvices.validateUser(
-          context: context, userCredential: userCredential);
-
-      if (userData != null) {
-        Ax.goBack();
-      } else {
-        setState(() {
-          User user = userCredential.user!;
-          userDetailsModel = UserDetailsModel(
-            id: user.uid,
-            email: userCredential.user?.email,
-            phone: userCredential.user?.phoneNumber,
-            name: user.displayName,
-            userName: Utils.generateUserName(username: user.email),
-            profilePicture: user.photoURL,
-          );
-          currentOTPSatet = OTPState.userDetailsFill;
-        });
-      }
-    } else {
-      setState(() {
-        currentOTPSatet = OTPState.wrongOtp;
-      });
-    }
+    // TODO : Verify OTP in Future
   }
 }
 
@@ -360,13 +294,9 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
                   backgroundColor: Colors.greenAccent,
                   backgroundImage: profileImage?.path != null
                       ? Image.file(File(profileImage!.path)).image
-                      : widget.userDetailsModel.profilePicture != null
-                          ? NetworkImage(
-                              widget.userDetailsModel.profilePicture!)
-                          : null,
+                      : NetworkImage(widget.userDetailsModel.profilePicture),
                   radius: 50.0,
-                  child: profileImage?.path != null ||
-                          widget.userDetailsModel.profilePicture != null
+                  child: profileImage?.path != null
                       ? null
                       : const Icon(
                           Icons.add_a_photo_outlined,
@@ -411,7 +341,11 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
             ),
             const SizedBox(height: 20.0),
             FilledButton(
-              onPressed: isImageUploading || isSubmitting ? null : _onSubmit,
+              onPressed: isImageUploading || isSubmitting
+                ? null
+                : () {
+                  // TODO : Upload User Image
+                  },
               child: Text(isImageUploading
                   ? "Uploading image ..."
                   : isSubmitting
@@ -424,51 +358,4 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
     );
   }
 
-  Future<void> _onSubmit() async {
-    if (formKey.currentState!.validate()) {
-      setState(() {
-        isUserNameExists = !isUserNameExists;
-      });
-      String? downloadUrl;
-      try {
-        if (profileImage != null) {
-          setState(() {
-            isImageUploading = true;
-          });
-
-          downloadUrl = await ImageCollectionService.uploadImage(
-              file: File(profileImage!.path), path: config.userProfilePicture);
-        }
-        setState(() {
-          isImageUploading = false;
-          isSubmitting = true;
-        });
-        UserDetailsModel userDetailsModel = UserDetailsModel(
-            id: widget.userDetailsModel.id,
-            email: widget.userDetailsModel.email,
-            phone: widget.userDetailsModel.phone,
-            name: name.text,
-            userName: userName.text,
-            profilePicture:
-                downloadUrl ?? widget.userDetailsModel.profilePicture);
-
-        bool isAdded =
-            await UserCollectionService().addUpdateData(userDetailsModel);
-        if (isAdded) {
-          Ax.goBack();
-        } else {
-          setState(() {
-            isSubmitting = false;
-          });
-        }
-      } catch (e) {
-        debugPrint("Error in authentication--");
-        Ax.goBack();
-        FloatingMsg.show(
-            context: context,
-            msg: "Something Went Wrong",
-            msgType: MsgType.error);
-      }
-    }
-  }
 }

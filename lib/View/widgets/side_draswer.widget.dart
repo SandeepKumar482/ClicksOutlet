@@ -1,4 +1,3 @@
-import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/package.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +31,7 @@ class SideDrawer extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 50.0,
                                     backgroundImage: NetworkImage(
-                                        userDetailsModel.profilePicture ??
-                                            config.imagePreviewUrl),
+                                        userDetailsModel.profilePicture),
                                   ),
                                   const SizedBox(
                                     width: 15.0,

@@ -41,96 +41,88 @@ class ImagesGrid extends StatelessWidget {
                     // horizontal gap between two items
                     crossAxisSpacing: 4,
                     itemBuilder: (context, index) {
-                      // display each  item with a card
 
-                      if (imagesList[index] != null) {
-                        // Add null check
-                        ImageModel image = imagesList[index];
-                        return InkWell(
-                          onTap: () async {
-                            await showDialog(
-                              context: context,
-                              builder: (_) => ImageDialog(
-                                  imageUrl: image.imageUrl, imageId: image.mid),
-                            );
-                          },
-                          child: Stack(children: [
-                            Card(
-                              // Give each item a random background color
-                              //color: Colors.grey,
-                              key: ValueKey(imagesList[index].imageUrl),
-                              child: ImageDTO(imageUrl: image.imageUrl ?? ""),
-                            ),
-                            Positioned(
-                              bottom: 15,
-                              left: 10,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                          size: MediaQuery.of(context)
-                                                      .orientation ==
-                                                  Orientation.portrait
-                                              ? MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.023
-                                              : MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.03,
-                                        ),
-                                        Text(
-                                          '${image.likes ?? 0} likes',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall
-                                                ?.fontSize, // Use theme-based font size
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      image.labelName ?? "Anonymous",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: MediaQuery.of(context)
+                      ImageModel image = imagesList[index];
+                      // Add null check
+                      return InkWell(
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (_) => ImageDialog(imageModel: image),
+                          );
+                        },
+                        child: Stack(children: [
+                          Card(
+                            key: ValueKey(image.imageUrl),
+                            child: ImageDTO(imageUrl: image.imageUrl),
+                          ),
+                          Positioned(
+                            bottom: 15,
+                            left: 10,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: MediaQuery.of(context)
                                                     .orientation ==
                                                 Orientation.portrait
                                             ? MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.025
+                                                0.023
                                             : MediaQuery.of(context)
                                                     .size
                                                     .height *
                                                 0.03,
                                       ),
+                                      Text(
+                                        '${image.likes ?? 0} likes',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.fontSize, // Use theme-based font size
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    image.labelName ?? "Anonymous",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: MediaQuery.of(context)
+                                                  .orientation ==
+                                              Orientation.portrait
+                                          ? MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.025
+                                          : MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
                                     ),
-                                  ]),
-                            ),
-                          ]),
-                        );
-                      } else {
-                        return SizedBox.shrink(); // Or a placeholder widget
-                      }
-                    },
+                                  ),
+                                ]),
+                          ),
+                        ]),
+                      );
+                                        },
                   ),
                 ),
               ],
             );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         });
   }

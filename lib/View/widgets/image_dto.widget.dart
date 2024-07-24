@@ -12,29 +12,22 @@ class ImageDTO extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: CachedNetworkImage(
-              // Use CachedNetworkImage for efficient image loading
-              imageUrl: imageUrl,
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                // Starting color of the shimmer
-                highlightColor: Colors.grey[100]!,
-                // Ending color of the shimmer
-                child: Container(
-                  color: Colors.grey[300], // Base color for the shimmer effect
-                ),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              fit: BoxFit.cover,
-            ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: CachedNetworkImage(
+        // Use CachedNetworkImage for efficient image loading
+        imageUrl: imageUrl,
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          // Starting color of the shimmer
+          highlightColor: Colors.grey[100]!,
+          // Ending color of the shimmer
+          child: Container(
+            color: Colors.grey[300], // Base color for the shimmer effect
           ),
-        ],
+        ),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.cover,
       ),
     );
   }

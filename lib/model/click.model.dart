@@ -1,11 +1,13 @@
 import 'package:apex_infinity/utils/comman.uitls.dart';
 
+import '../main.dart';
+
 class ImageModel {
   final String? mid;
   final String? uid;
   final String? labelName;
   final String? userName;
-  final String? imageUrl;
+  final String imageUrl;
   final String? imageName;
   final String? captions;
   final List<String?> tags;
@@ -16,7 +18,7 @@ class ImageModel {
     this.uid,
     this.labelName,
     this.userName,
-    this.imageUrl,
+    required this.imageUrl,
     this.imageName,
     this.captions,
     this.tags = const [],
@@ -31,13 +33,15 @@ class ImageModel {
        labelName: map['label_name'],
        userName: map['user_name'],
        imageName: map['image_name'],
-       imageUrl: map['image_url'],
+       imageUrl: map['image_url'] ?? config.previewImageUrl,
        captions: map['caption'],
        tags: getStringList(list: map['tags']),
        likes: map['likes']
      ) ;
     } else {
-      return ImageModel();
+      return ImageModel(
+        imageUrl: config.previewImageUrl
+      );
     }
   }
 

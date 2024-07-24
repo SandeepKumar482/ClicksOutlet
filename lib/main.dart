@@ -10,10 +10,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 final Config config = Config(
-    userCollection: 'Dev Users',
-    imageFolder: 'Dev',
-    imageCollection: 'Dev Images',
-    userProfilePicture: 'Dev User/Profile Picture/');
+  baseUrl: "http://192.168.191.134:120",
+  apiKey: 'adba4a4c24b866fa7a997f65009b0e255683f5f7'
+);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,10 +24,10 @@ Future<void> main() async {
   await SharedPreference.init();
 
   Ax.httpRequest.configRequest(
-    baseUrl: "http://192.168.191.134:120",
+    baseUrl: config.baseUrl,
     headers: {
       'Content-Type': 'application/json',
-      'api-key': 'adba4a4c24b866fa7a997f65009b0e255683f5f7',
+      'api-key': config.apiKey,
     },
   );
 
