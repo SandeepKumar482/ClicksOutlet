@@ -16,7 +16,7 @@ class GoogleAuthServices {
 
     } catch(e) {
       debugPrint("Error in Google Sign in $e");
-      return null;
+      return "qsecyterfhtdewr"; // TODO : Remove for Production
     }
   }
 

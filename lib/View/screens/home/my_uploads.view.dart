@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
@@ -40,7 +39,7 @@ class _MyUploadsState extends State<MyUploads> {
     final FloatingActionButton floatingActionButton = FloatingActionButton(
       onPressed: () async {
         userDetailsModel = UserDetailsModel.fromSP();
-        if (userDetailsModel.id == null) {
+        if (userDetailsModel.id != null) {
           await showDialog(
               context: context,
               barrierDismissible: false,
@@ -84,27 +83,21 @@ class _MyUploadsState extends State<MyUploads> {
   Future<void> selectAnduploadImage() async {
     XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (selectedImage != null) {
-      openAddClickBottomSheet(context: context, imagePath: selectedImage.path);
-    } else {
+    if (selectedImage == null) {
       FloatingMsg.show(
-          context: context,
-          msg: "Please Select A Image",
-          msgType: MsgType.error);
-    }
-  }
+        context: context,
+        msg: "Please Select A Image",
+        msgType: MsgType.error
+      );
+    } else {
+      File file = File(selectedImage.path);
+      final d = await decodeImageFromList(file.readAsBytesSync());
+      final formKey = GlobalKey<FormState>();
 
-  Future<void> openAddClickBottomSheet({
-    required BuildContext context,
-    required String imagePath,
-  }) {
-    File file = File(imagePath);
-    final formKey = GlobalKey<FormState>();
+      final TextEditingController caption = TextEditingController();
+      final TextEditingController tags = TextEditingController();
 
-    final TextEditingController caption = TextEditingController();
-    final TextEditingController tags = TextEditingController();
-
-    return showModalBottomSheet(
+      return showModalBottomSheet(
         isScrollControlled: true,
         showDragHandle: true,
         useSafeArea: true,
@@ -113,7 +106,7 @@ class _MyUploadsState extends State<MyUploads> {
           return SingleChildScrollView(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
+              const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -144,9 +137,11 @@ class _MyUploadsState extends State<MyUploads> {
                         AxHttpResponse response = await Ax.httpRequest.post(
                           url: '/images/',
                           body: {
-                            'image' : File(imagePath),
+                            'image' : File(file.path),
                             'caption' : caption.text,
-                            'tags' : [tags.text]
+                            'tags' : [tags.text],
+                            'height' : d.height,
+                            'width' : d.width,
                           }
                         );
 
@@ -167,6 +162,7 @@ class _MyUploadsState extends State<MyUploads> {
             ),
           );
         });
+    }
   }
 
 }

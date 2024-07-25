@@ -1,5 +1,4 @@
 import 'package:apex_infinity/image/network_image.dart';
-import 'package:clicks_outlet/View/widgets/image_dto.widget.dart';
 import 'package:clicks_outlet/View/widgets/image_pop_up.widget.dart';
 import 'package:clicks_outlet/View/widgets/my_search_bar.widget.dart';
 import 'package:clicks_outlet/model/click.model.dart';
@@ -57,8 +56,6 @@ class ImagesGrid extends StatelessWidget {
                             key: ValueKey(image.imageUrl),
                             child: AxNetworkImage(
                               imageUrl: image.imageUrl,
-                              width: image.width,
-                              height: image.height,
                             ),
                           ),
                           Positioned(
