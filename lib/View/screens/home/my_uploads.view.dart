@@ -18,6 +18,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../widgets/HashtagBubble.dart';
+
 class MyUploads extends StatefulWidget {
   const MyUploads({super.key});
 
@@ -27,11 +29,22 @@ class MyUploads extends StatefulWidget {
 
 class _MyUploadsState extends State<MyUploads> {
   List<ImageModel> imageList = [];
-
   UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
   final ImagePicker _picker = ImagePicker();
-
+  late HashtagEditingController _controller;
   Future<List<ImageModel>>? getImages;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = HashtagEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void fetchImageList() {
     setState(() {
@@ -167,7 +180,7 @@ class _MyUploadsState extends State<MyUploads> {
                       ),
                       InputWidget(
                         label: "Tags",
-                        controller: tags,
+                        controller: _controller,
                       ),
                       const SizedBox(
                         height: 20.0,
