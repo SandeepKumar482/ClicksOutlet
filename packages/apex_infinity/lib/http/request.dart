@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:apex_infinity/http/response.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -111,6 +110,7 @@ class AxHttpRequest {
 
       Map<String, dynamic> jsonResponse = jsonDecode(resData);
 
+      print(resData);
       if(res.statusCode == 200) {
         response = AxHttpResponse(
             status: jsonResponse['status'] ?? false,

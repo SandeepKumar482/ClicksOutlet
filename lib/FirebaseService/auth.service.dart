@@ -12,11 +12,11 @@ class GoogleAuthServices {
       // Obtain the auth details from the request
       final googleAuth = await googleUser?.authentication;
 
-      return googleAuth?.accessToken;
+      return googleAuth?.idToken;
 
     } catch(e) {
       debugPrint("Error in Google Sign in $e");
-      return "qsecyterfhtdewr"; // TODO : Remove for Production
+      return null;
     }
   }
 

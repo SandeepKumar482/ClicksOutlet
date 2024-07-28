@@ -39,7 +39,7 @@ class _MyUploadsState extends State<MyUploads> {
     final FloatingActionButton floatingActionButton = FloatingActionButton(
       onPressed: () async {
         userDetailsModel = UserDetailsModel.fromSP();
-        if (userDetailsModel.id != null) {
+        if (userDetailsModel.id == null) {
           await showDialog(
               context: context,
               barrierDismissible: false,
