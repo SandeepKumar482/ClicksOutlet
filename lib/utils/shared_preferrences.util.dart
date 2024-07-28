@@ -2,34 +2,59 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PreferenceUtils {
-  static Future<SharedPreferences> get _instance async =>
-      _prefsInstance ??= await SharedPreferences.getInstance();
+class SharedPreferenceKey {
+  static String packageInfo = 'packageInfo';
+  static String userData = 'userData';
+  static String seedColor = 'seedColor';
+  static String isLight = 'isLight';
+}
 
-  static SharedPreferences? _prefsInstance;
+class SharedPreference {
+  static SharedPreferences? _sharedPreferences;
 
-  // Call this method from the `initState()` function of your main app.
-  static Future<SharedPreferences> init() async {
-    _prefsInstance = await _instance;
-    return _prefsInstance!;
+  static init() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  static Future<bool> clearData({String? key}) async {
+    if (_sharedPreferences == null) {
+      await SharedPreference.init();
+    }
+
+    if (key != null) {
+      return _sharedPreferences!.remove(key);
+    } else {
+      return _sharedPreferences!.clear();
+    }
+  }
+
+  static Future<bool> setData(
+      {required String key, required dynamic data, bool isBool = false}) async {
+    if (_sharedPreferences == null) {
+      await SharedPreference.init();
+    }
+
+    if (isBool) {
+      return _sharedPreferences!.setBool(key, data);
+    }
+
+    return _sharedPreferences!.setString(key, data);
+  }
+
+  static Object? getData({required String key}) {
+    return _sharedPreferences?.get(key);
+  }
+
+  static bool isKeyExits({required String key}) {
+    Object? data = _sharedPreferences?.get(key);
+    return data != null;
   }
 
   // Example method to get a string value from SharedPreferences.
-  static String getString(String key) {
-    return _prefsInstance?.getString(key) ?? "";
-  }
-
-  // Example method to set a string value in SharedPreferences.
-  static Future<bool> setString(String key, String value) async {
-    var prefs = await _instance;
-    return prefs.setString(key, value);
-  }
-
-  // Example method to get a string value from SharedPreferences.
-  static Map<String, dynamic> getJson(String key) {
+  static Map<String, dynamic> getJson({required String key}) {
     Map<String, dynamic> data = {};
 
-    String? rawData = _prefsInstance?.getString(key);
+    String? rawData = _sharedPreferences?.getString(key);
     if (rawData != null && rawData.isNotEmpty) {
       data = jsonDecode(rawData);
     }
@@ -37,13 +62,12 @@ class PreferenceUtils {
   }
 
   // Example method to set a string value in SharedPreferences.
-  static Future<bool> setJson(String key, Map<String, dynamic> value) async {
-    var prefs = await _instance;
-    return prefs.setString(key, jsonEncode(value));
+  static Future<bool> setJson(
+      {required String key, required Map<String, dynamic> value}) async {
+    return _sharedPreferences!.setString(key, jsonEncode(value));
   }
 
   static Future<bool> clear() async {
-    var prefs = await _instance;
-    return prefs.clear();
+    return _sharedPreferences!.clear();
   }
 }

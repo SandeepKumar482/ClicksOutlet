@@ -1,3 +1,4 @@
+import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 
 class UserDetailsModel {
@@ -8,7 +9,7 @@ class UserDetailsModel {
   final String? phone;
   final String? name;
   final String? userName;
-  final String? profilePicture;
+  final String profilePicture;
   final bool isDetailsCompleted;
 
   UserDetailsModel(
@@ -17,7 +18,7 @@ class UserDetailsModel {
       required this.phone,
       required this.name,
       required this.userName,
-      this.profilePicture,
+      required this.profilePicture,
       this.isDetailsCompleted = false});
 
   Map<String, dynamic> toMap() => {
@@ -38,16 +39,18 @@ class UserDetailsModel {
       name: map?['name'],
       userName: map?['user_name'],
       isDetailsCompleted: map?['is_details_completed'] ?? false,
-      profilePicture: map?['profile_picture'],
+      profilePicture: map?['profile_picture'] ?? config.previewImageUrl,
     );
   }
 
   factory UserDetailsModel.fromSP() {
-    Map<String, dynamic> data = PreferenceUtils.getJson(UserDetailsModel.spKey);
+    Map<String, dynamic> data =
+        SharedPreference.getJson(key: UserDetailsModel.spKey);
     return UserDetailsModel.fromMap(map: data);
   }
 
   Future<bool> setToSP() async {
-    return PreferenceUtils.setJson(UserDetailsModel.spKey, toMap());
+    return SharedPreference.setJson(
+        key: UserDetailsModel.spKey, value: toMap());
   }
 }

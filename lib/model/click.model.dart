@@ -1,59 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:apex_infinity/utils/comman.uitls.dart';
+
+import '../main.dart';
 
 class ImageModel {
-  final String url;
-  final String? caption;
-  final List<String?> tags;
-  final String? userId;
+  final String? mid;
+  final String? uid;
+  final String? labelName;
   final String? userName;
+  final String? imageUrl;
+  final String? imageName;
+  final double? width;
+  final double? height;
+  final String? captions;
+  final List<String?> tags;
   final int? likes;
-  final String? imageId;
-  final List<String?>? likedBy;
 
   ImageModel({
-    required this.url,
-    required this.userId,
+    this.mid,
+    this.uid,
+    this.labelName,
     this.userName,
-    this.caption,
+    required this.imageUrl,
+    this.imageName,
+    this.width,
+    this.height,
+    this.captions,
     this.tags = const [],
     this.likes = 0,
-    this.imageId,
-    this.likedBy,
   });
 
-  static ImageModel fromMap(
-      {required Map<dynamic, dynamic>? map, String? imageId}) {
-    return ImageModel(
-        url: map?['url'],
-        caption: map?['caption'],
-        userId: map?['user_id'],
-        userName: map?['user_name'],
-        likes: map?['likes'],
-        imageId: imageId /*,
-        likedBy: map?['likedBy']*/
-        );
+  factory ImageModel.fromMap({required dynamic map}) {
+    if(map is Map) {
+     return ImageModel(
+       mid: map['img_id'].toString(),
+       uid: map['uid'].toString(),
+       labelName: map['label_name'],
+       userName: map['user_name'],
+       imageName: map['image_name'],
+       imageUrl: map['image_url'],
+       width: map['width']?.toDouble(),
+       height: map['height']?.toDouble(),
+       captions: map['caption'],
+       tags: getStringList(list: map['tags']),
+       likes: map['likes']
+     ) ;
+    } else {
+      return ImageModel(
+        imageUrl: config.previewImageUrl
+      );
+    }
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'url': url,
-      'caption': caption,
-      'tags': tags,
-      'user_id': userId,
-      'user_name': userName,
-      'likes': likes,
-      'likedBy': likedBy
     };
   }
 
-  static List<ImageModel> getImagesList(
-      {required List<QueryDocumentSnapshot<Map<String, dynamic>>>? docsList}) {
-    List<ImageModel> list = [];
-    if (docsList != null && docsList.isNotEmpty) {
-      for (QueryDocumentSnapshot<Map<String, dynamic>> dataObj in docsList) {
-        list.add(ImageModel.fromMap(map: dataObj.data(), imageId: dataObj.id));
+  static List<ImageModel> getImagesList({required dynamic list}) {
+    List<ImageModel> imageList = [];
+    if (list is List) {
+      for (var data in list) {
+        imageList.add(ImageModel.fromMap(map: data));
       }
     }
-    return list;
+
+    return imageList;
   }
 }

@@ -1,20 +1,18 @@
 import 'dart:io';
 
+import 'package:apex_infinity/apex_infinity.dart';
+import 'package:apex_infinity/http/response.dart';
+import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
-import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
-import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
-import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/user_details.dart';
-import 'package:clicks_outlet/utils/Utils.dart';
+import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class Auth extends StatefulWidget {
@@ -94,9 +92,7 @@ class __AuthModelState extends State<_AuthModel> {
               prefixIcon: const Icon(Icons.phone_android_rounded),
               readOnly: currentAuthState == AuthState.sendingVrificationCode,
               validator: (phoneNumber) {
-                if (phoneNumber != null &&
-                    phoneNumber.length == 10 &&
-                    phoneNumber.isPhoneNumber) {
+                if (phoneNumber != null && phoneNumber.length == 10) {
                   return null;
                 } else {
                   return "Enter a Valid Phone Number";
@@ -195,41 +191,27 @@ class __AuthModelState extends State<_AuthModel> {
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } catch (e) {
-      e.printError(info: "Error in authentication--");
-      Utils.getSnacbar("Authentication", e.toString());
+      debugPrint("Error in authentication--");
     }
   }
 
   Future<void> _googleAuth() async {
-    setState(() {
-      currentAuthState = AuthState.googleAuthentication;
-    });
-    UserCredential? userCredential = await AuthSevrvices.signInWithGoogle();
-    if (userCredential?.user != null) {
-      UserDetailsModel? userData = await AuthSevrvices.validateUser(
-          context: context, userCredential: userCredential);
+   final String? idToken  = await  GoogleAuthServices.signInWithGoogle();
+   Ax.goBack();
+   
+   if(idToken == null) {
+     FloatingMsg.show(context: context, msg: "Something Went Wrong", msgType: MsgType.error);
+   } else {
+     final AxHttpResponse response = await  Ax.httpRequest.post(url: '/auth/',body: {
+       'auth_token' : idToken,
+       'auth_provider' : "GOOGLE"
+     });
 
-      if (userData != null) {
-        Get.back();
-      } else {
-        setState(() {
-          User user = userCredential!.user!;
-          _userDetailsModel = UserDetailsModel(
-            id: user.uid,
-            email: userCredential.user?.email,
-            phone: userCredential.user?.phoneNumber,
-            name: user.displayName,
-            userName: Utils.generateUserName(username: user.email),
-            profilePicture: user.photoURL,
-          );
-          currentAuthState = AuthState.userDetailsFill;
-        });
-      }
-    } else {
-      setState(() {
-        currentAuthState = AuthState.auth;
-      });
-    }
+     if(response.redirectUrl != null) {
+       AxNaviagtion.goTo(path: response.redirectUrl);
+     }
+   }
+   
   }
 }
 
@@ -289,38 +271,7 @@ class __OTPModelState extends State<_OTPModel> {
   }
 
   Future<void> _verifyOTP() async {
-    setState(() {
-      currentOTPSatet = OTPState.verifying;
-    });
-
-    UserCredential? userCredential = await AuthSevrvices.verifyOTP(
-        verificationId: widget.verificationId, smsCode: _otpController.text);
-
-    if (userCredential != null) {
-      UserDetailsModel? userData = await AuthSevrvices.validateUser(
-          context: context, userCredential: userCredential);
-
-      if (userData != null) {
-        Get.back();
-      } else {
-        setState(() {
-          User user = userCredential.user!;
-          userDetailsModel = UserDetailsModel(
-            id: user.uid,
-            email: userCredential.user?.email,
-            phone: userCredential.user?.phoneNumber,
-            name: user.displayName,
-            userName: Utils.generateUserName(username: user.email),
-            profilePicture: user.photoURL,
-          );
-          currentOTPSatet = OTPState.userDetailsFill;
-        });
-      }
-    } else {
-      setState(() {
-        currentOTPSatet = OTPState.wrongOtp;
-      });
-    }
+    // TODO : Verify OTP in Future
   }
 }
 
@@ -356,34 +307,17 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
           children: <Widget>[
             InkWell(
                 onTap: () async {
-                  PermissionStatus status = await Permission.photos.status;
-                  if (status.isGranted) {
-                    profileImage =
-                        await _picker.pickImage(source: ImageSource.gallery);
-                    setState(() {});
-                  } else {
-                    PermissionStatus requestStatus =
-                        await Permission.photos.request();
-                    if (requestStatus.isGranted) {
-                    } else {
-                      FloatingMsg.show(
-                          context: context,
-                          msg: "Please Allow Photos First",
-                          msgType: MsgType.error);
-                    }
-                  }
+                  profileImage =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  setState(() {});
                 },
                 child: CircleAvatar(
                   backgroundColor: Colors.greenAccent,
                   backgroundImage: profileImage?.path != null
                       ? Image.file(File(profileImage!.path)).image
-                      : widget.userDetailsModel.profilePicture != null
-                          ? NetworkImage(
-                              widget.userDetailsModel.profilePicture!)
-                          : null,
+                      : NetworkImage(widget.userDetailsModel.profilePicture),
                   radius: 50.0,
-                  child: profileImage?.path != null ||
-                          widget.userDetailsModel.profilePicture != null
+                  child: profileImage?.path != null
                       ? null
                       : const Icon(
                           Icons.add_a_photo_outlined,
@@ -428,7 +362,11 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
             ),
             const SizedBox(height: 20.0),
             FilledButton(
-              onPressed: isImageUploading || isSubmitting ? null : _onSubmit,
+              onPressed: isImageUploading || isSubmitting
+                ? null
+                : () {
+                  // TODO : Upload User Image
+                  },
               child: Text(isImageUploading
                   ? "Uploading image ..."
                   : isSubmitting
@@ -441,51 +379,4 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
     );
   }
 
-  Future<void> _onSubmit() async {
-    if (formKey.currentState!.validate()) {
-      setState(() {
-        isUserNameExists = !isUserNameExists;
-      });
-      String? downloadUrl;
-      try {
-        if (profileImage != null) {
-          setState(() {
-            isImageUploading = true;
-          });
-
-          downloadUrl = await ImageCollectionService.uploadImage(
-              file: File(profileImage!.path), path: config.userProfilePicture);
-        }
-        setState(() {
-          isImageUploading = false;
-          isSubmitting = true;
-        });
-        UserDetailsModel userDetailsModel = UserDetailsModel(
-            id: widget.userDetailsModel.id,
-            email: widget.userDetailsModel.email,
-            phone: widget.userDetailsModel.phone,
-            name: name.text,
-            userName: userName.text,
-            profilePicture:
-                downloadUrl ?? widget.userDetailsModel.profilePicture);
-
-        bool isAdded =
-            await UserCollectionService().addUpdateData(userDetailsModel);
-        if (isAdded) {
-          Get.back();
-        } else {
-          setState(() {
-            isSubmitting = false;
-          });
-        }
-      } catch (e) {
-        e.printError(info: "Error in authentication--");
-        Get.back();
-        FloatingMsg.show(
-            context: context,
-            msg: "Something Went Wrong",
-            msgType: MsgType.error);
-      }
-    }
-  }
 }

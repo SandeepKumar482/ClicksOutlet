@@ -1,44 +1,13 @@
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
-import 'package:clicks_outlet/FirebaseService/user_collection.service.dart';
-import 'package:clicks_outlet/main.dart';
 import 'package:clicks_outlet/model/click.model.dart';
-import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 
-class ImageDialog extends StatefulWidget {
-  final String? imageUrl;
-  final String? imageId;
 
-  ImageDialog({super.key, required this.imageUrl, required this.imageId});
+class ImageDialog extends StatelessWidget {
+  final ImageModel imageModel;
 
-  @override
-  State<ImageDialog> createState() => _ImageDialogState();
-}
-
-class _ImageDialogState extends State<ImageDialog> {
-  bool isLiked = false;
-
-  UserCollectionService userCollectionService = UserCollectionService();
-
-  ImageCollectionService imageCollectionService = ImageCollectionService();
-
-  UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
-
-  void fetch() async {
-    ImageModel? imageModel =
-        await imageCollectionService.getDocumentById(widget.imageId!);
-    if (imageModel!.likedBy != null &&
-        imageModel.likedBy!.contains(userDetailsModel.id)) {
-      isLiked = true;
-    }
-  }
-
-  @override
-  void initState() {
-    fetch();
-    super.initState();
-  }
+  const ImageDialog({super.key, required this.imageModel});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +20,7 @@ class _ImageDialogState extends State<ImageDialog> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(
-                image: NetworkImage(widget.imageUrl ?? config.imagePreviewUrl),
+                image: NetworkImage(imageModel.imageUrl!),
                 fit: BoxFit.cover,
               ),
             ),
@@ -69,34 +38,19 @@ class _ImageDialogState extends State<ImageDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        icon: isLiked
-                            ? const Icon(Icons.favorite_sharp)
-                            : const Icon(Icons.favorite_border),
+                        icon: const Icon(Icons.favorite_sharp),
                         onPressed: () async {
                           // Add your like logic here.
-                          if (isLiked) {
-                            await removeLike(userDetailsModel.id,
-                                widget.imageId, widget.imageUrl);
-                            setState(() {
-                              isLiked = false;
-                            });
-                          } else {
-                            await addLike(userDetailsModel.id, widget.imageId,
-                                widget.imageUrl);
-                            setState(() {
-                              isLiked = true;
-                            });
-                          }
+                          // TODO : Like/Unlike
                         },
                       ),
                       IconButton(
                         icon: const Icon(Icons.download),
                         onPressed: () async {
                           // Add your download logic here.
-
                           try {
                             await ImageCollectionService()
-                                .downloadAndSaveImage(widget.imageUrl!);
+                                .downloadAndSaveImage(imageModel.imageUrl);
                             FloatingMsg.show(
                                 context: context,
                                 msg: "Image Saved!",
@@ -124,60 +78,5 @@ class _ImageDialogState extends State<ImageDialog> {
         },
       ),
     );
-  }
-
-  Future<bool> addLike(
-      String? userId, String? imageId, String? imageUrl) async {
-    if (imageId != null && userId != null) {
-      ImageModel? imageModel =
-          await imageCollectionService.getDocumentById(imageId);
-      if (imageModel != null) {
-        int? likes = imageModel.likes;
-        likes ??= 0;
-        List<String?>? likedBy = imageModel.likedBy;
-        List<String?> updatedLikedBy = likedBy?.toList() ?? [];
-        updatedLikedBy.add(userId);
-        ImageModel imageModel2 = ImageModel(
-            url: imageUrl!,
-            userId: imageModel.userId,
-            caption: imageModel.caption,
-            tags: imageModel.tags,
-            userName: imageModel.userName,
-            likes: likes + 1,
-            likedBy: updatedLikedBy,
-            imageId: imageId);
-        await imageCollectionService.updateImageDetails(imageModel2);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Future<bool> removeLike(
-      String? userId, String? imageId, String? imageUrl) async {
-    if (imageId != null && userId != null) {
-      ImageModel? imageModel =
-          await imageCollectionService.getDocumentById(imageId);
-      if (imageModel != null) {
-        int? likes = imageModel.likes;
-        List<String?>? likedBy = imageModel.likedBy;
-        List<String?> updatedLikedBy = likedBy?.toList() ?? [];
-        if (likedBy != null && likedBy.isNotEmpty && likedBy.contains(userId)) {
-          updatedLikedBy.remove(userId);
-        }
-        ImageModel imageModel2 = ImageModel(
-            url: imageUrl!,
-            userId: imageModel.userId,
-            caption: imageModel.caption,
-            tags: imageModel.tags,
-            userName: imageModel.userName,
-            likes: likes == null ? 0 : likes - 1,
-            likedBy: updatedLikedBy,
-            imageId: imageId);
-        await imageCollectionService.updateImageDetails(imageModel2);
-        return true;
-      }
-    }
-    return false;
   }
 }
