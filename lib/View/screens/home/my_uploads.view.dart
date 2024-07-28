@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
+import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
@@ -14,7 +15,10 @@ import 'package:image_picker/image_picker.dart';
 import '../../widgets/HashtagBubble.dart';
 
 class MyUploads extends StatefulWidget {
-  const MyUploads({super.key});
+
+  final AxNavigationData navigationData;
+
+  const MyUploads({super.key,required this.navigationData});
 
   @override
   State<MyUploads> createState() => _MyUploadsState();

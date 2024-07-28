@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class AxApp extends StatelessWidget {
   final Widget? unknowPageWidget;
   final String initialRoute;
-  final Widget? Function(AxNaviagtionData naviaftionData) routeResolver;
+  final Widget? Function(AxNavigationData naviaftionData) routeResolver;
   final ThemeData? themeData;
 
   const AxApp({
@@ -43,7 +43,7 @@ class AxApp extends StatelessWidget {
         }
       }
 
-      AxNaviagtionData naviagtionData = AxNaviagtionData(
+      AxNavigationData naviagtionData = AxNavigationData(
           path: uri.path,
           pathSegments: pathSegments,
           query: uri.query,

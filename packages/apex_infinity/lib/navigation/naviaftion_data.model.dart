@@ -1,4 +1,4 @@
-class AxNaviagtionData {
+class AxNavigationData {
   final String path;
   final Iterable<String> pathSegments;
   final String query;
@@ -6,7 +6,7 @@ class AxNaviagtionData {
   final String fragment;
   final Map<String, dynamic> extraArguments;
 
-  AxNaviagtionData(
+  AxNavigationData(
       {required this.path,
       required this.pathSegments,
       required this.query,

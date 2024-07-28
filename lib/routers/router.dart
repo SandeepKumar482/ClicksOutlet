@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 
 import '../View/screens/authentication/register.view.dart';
 
-Widget? routeResolver(AxNaviagtionData navigationData) {
+Widget? routeResolver(AxNavigationData navigationData) {
   if (navigationData.path == RoutesConfig.initial ||
-      navigationData.path == RoutesConfig.home) {
-    return Home(
-      section: navigationData.fragment,
-    );
+      navigationData.path == RoutesConfig.home ||
+      navigationData.path == RoutesConfig.trending ||
+      navigationData.path == RoutesConfig.liked ||
+      navigationData.path == RoutesConfig.myUploads
+  ) {
+    return Home(navigationData: navigationData,);
   } else if (navigationData.path == RoutesConfig.register) {
     return RegisterView(urlPath: navigationData.path,queryParams: navigationData.queryParameters,);
   }

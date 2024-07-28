@@ -1,7 +1,11 @@
+import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:flutter/material.dart';
 
 class LikedClicks extends StatelessWidget {
-  const LikedClicks({super.key});
+
+  final AxNavigationData navigationData;
+
+  const LikedClicks({super.key,required this.navigationData});
 
   @override
   Widget build(BuildContext context) {

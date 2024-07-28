@@ -1,3 +1,4 @@
+import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/View/screens/home/liked.view.dart';
 import 'package:clicks_outlet/View/screens/home/my_uploads.view.dart';
@@ -9,8 +10,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  final String? section;
-  const Home({required this.section, super.key});
+  final AxNavigationData navigationData;
+  const Home({required this.navigationData, super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -24,26 +25,26 @@ class _HomeState extends State<Home> {
     List<_BottomNavItems> bottomItems = [
       _BottomNavItems(
           index: 0,
-          key: 'trending',
-          path: RoutesConfig.homeTrending,
+          key: RoutesConfig.trending,
+          path: RoutesConfig.trending,
           icon: const Icon(Icons.home, size: 30),
-          page: const TrendingClicks()),
+          page: TrendingClicks( navigationData: widget.navigationData,)),
       _BottomNavItems(
           index: 1,
-          key: 'liked',
-          path: RoutesConfig.homeLiked,
+          key: RoutesConfig.liked,
+          path: RoutesConfig.liked,
           icon: const Icon(Icons.favorite, size: 30),
-          page: const LikedClicks()),
+          page: LikedClicks(navigationData: widget.navigationData,)),
       _BottomNavItems(
           index: 2,
-          key: 'my-uploads',
-          path: RoutesConfig.homeMyUploads,
+          key: RoutesConfig.myUploads,
+          path: RoutesConfig.myUploads,
           icon: const Icon(Icons.photo_album_outlined, size: 30),
-          page: const MyUploads()),
+          page: MyUploads(navigationData: widget.navigationData,)),
     ];
 
     int currentIndex = bottomItems.firstWhere((element) {
-      return element.key == widget.section;
+      return element.key == widget.navigationData.path;
     }, orElse: () => bottomItems.first).index;
 
     return Scaffold(

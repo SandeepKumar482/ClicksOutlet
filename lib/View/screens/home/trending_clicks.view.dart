@@ -1,3 +1,4 @@
+import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/model/click.model.dart';
@@ -5,7 +6,9 @@ import 'package:flutter/material.dart';
 
 class TrendingClicks extends StatefulWidget {
 
-  const TrendingClicks({super.key});
+  final AxNavigationData navigationData;
+
+  const TrendingClicks({super.key,required this.navigationData });
 
   @override
   State<TrendingClicks> createState() => _TrendingClicksState();
