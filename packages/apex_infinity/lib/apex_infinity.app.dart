@@ -49,8 +49,8 @@ class AxApp extends StatelessWidget {
           query: uri.query,
           queryParameters: uri.queryParameters,
           fragment: uri.fragment,
-          extraArgumnets: settings.arguments == null
-              ? null
+          extraArguments: settings.arguments == null
+              ? const {}
               : settings.arguments as Map<String, dynamic>);
 
       Widget? page = routeResolver(naviagtionData);

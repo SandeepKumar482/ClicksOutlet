@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:apex_infinity/http/response.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -27,13 +28,24 @@ class AxHttpRequest {
 
     final Uri uri = Uri.parse(url);
 
-    final String fullUrl = "${_baseUrl ?? ""}${uri.path}";
+    String fullUrl = "${_baseUrl ?? ""}${uri.path}";
 
     Map<String, String> finalHeaders = _headers;
 
     if (extraHeaders.isNotEmpty) {
       finalHeaders.addAll(extraHeaders);
     }
+
+    if(params.isNotEmpty) {
+      String queryString = "?";
+      params.forEach((key,vale) {
+        queryString += "$key=$vale&";
+      });
+      fullUrl += queryString;
+    }
+
+    debugPrint("************************* GET  REQUEST *****************************");
+    debugPrint(fullUrl);
 
     try {
       Response res = await http.get(Uri.parse(fullUrl), headers: finalHeaders);
@@ -45,7 +57,8 @@ class AxHttpRequest {
           status: jsonResponse['status'] ?? false,
           statusCode: jsonResponse['status_code'] ?? res.statusCode,
           msg: jsonResponse['msg'],
-          data: jsonResponse['data']
+          data: jsonResponse['data'],
+          redirectUrl: jsonResponse['redirect_url'],
         );
       } else {
         response = AxHttpResponse(
@@ -83,7 +96,8 @@ class AxHttpRequest {
     if (extraHeaders.isNotEmpty) {
       finalHeaders.addAll(extraHeaders);
     }
-
+    debugPrint("************************* POST  REQUEST *****************************");
+    debugPrint(fullUrl);
     try {
       MultipartRequest request = http.MultipartRequest('POST',Uri.parse(fullUrl));
       request.headers.addAll(finalHeaders);
@@ -110,13 +124,13 @@ class AxHttpRequest {
 
       Map<String, dynamic> jsonResponse = jsonDecode(resData);
 
-      print(resData);
       if(res.statusCode == 200) {
         response = AxHttpResponse(
             status: jsonResponse['status'] ?? false,
             statusCode: jsonResponse['status_code'] ?? res.statusCode,
             msg: jsonResponse['msg'],
-            data: jsonResponse['data']
+            data: jsonResponse['data'] ?? {},
+            redirectUrl: jsonResponse['redirect_url'],
         );
       } else {
         response = AxHttpResponse(

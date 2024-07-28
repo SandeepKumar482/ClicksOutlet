@@ -21,24 +21,23 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    RoutesConfig routseConfig = RoutesConfig();
     List<_BottomNavItems> bottomItems = [
       _BottomNavItems(
           index: 0,
           key: 'trending',
-          path: routseConfig.homeTrendings,
+          path: RoutesConfig.homeTrending,
           icon: const Icon(Icons.home, size: 30),
           page: const TrendingClicks()),
       _BottomNavItems(
           index: 1,
           key: 'liked',
-          path: routseConfig.homeLiked,
+          path: RoutesConfig.homeLiked,
           icon: const Icon(Icons.favorite, size: 30),
           page: const LikedClicks()),
       _BottomNavItems(
           index: 2,
           key: 'my-uploads',
-          path: routseConfig.homeMyUploads,
+          path: RoutesConfig.homeMyUploads,
           icon: const Icon(Icons.photo_album_outlined, size: 30),
           page: const MyUploads()),
     ];

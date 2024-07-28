@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
+import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
 import 'package:clicks_outlet/model/user_details.dart';
+import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -200,12 +202,14 @@ class __AuthModelState extends State<_AuthModel> {
    if(idToken == null) {
      FloatingMsg.show(context: context, msg: "Something Went Wrong", msgType: MsgType.error);
    } else {
-     print(idToken);
      final AxHttpResponse response = await  Ax.httpRequest.post(url: '/auth/',body: {
-       'auth_token' : idToken
+       'auth_token' : idToken,
+       'auth_provider' : "GOOGLE"
      });
-     print(response.data);
-     print(response.msg);
+
+     if(response.redirectUrl != null) {
+       AxNaviagtion.goTo(path: response.redirectUrl);
+     }
    }
    
   }
