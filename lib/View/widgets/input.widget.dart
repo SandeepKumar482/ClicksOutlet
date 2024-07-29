@@ -9,6 +9,7 @@ class InputWidget extends StatelessWidget {
   final void Function(String value)? onChange;
   final String? Function(String?)? validator;
   final bool readOnly;
+  final String? initialValue;
 
   const InputWidget({
     required this.label,
@@ -18,6 +19,7 @@ class InputWidget extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.readOnly = false,
+    this.initialValue,
     super.key,
   });
 
@@ -26,6 +28,7 @@ class InputWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: TextFormField(
+        initialValue: initialValue,
         onChanged: onChange,
         controller: controller,
         validator: validator,

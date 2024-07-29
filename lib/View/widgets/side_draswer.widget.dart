@@ -1,3 +1,4 @@
+import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/model/package.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:flutter/material.dart';
@@ -63,8 +64,11 @@ class SideDrawer extends StatelessWidget {
                       const ListTile(
                         title: Text("Privacy Policy"),
                       ),
-                      const ListTile(
+                      ListTile(
                         title: Text("Logout"),
+                        onTap: () {
+                          GoogleAuthServices.signOut();
+                        },
                       ),
                     ],
                   ),
