@@ -1,3 +1,4 @@
+import 'package:apex_infinity/layout/future.layout.dart';
 import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
@@ -32,13 +33,14 @@ class _TrendingClicksState extends State<TrendingClicks> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        fetchImageList();
-      },
-      child: ImagesGrid(
-        getImages: getImages
-      )
+    return AxFutureBuilder(
+      url: widget.navigationData.path,
+      childBuilder:(data) {
+
+        List<ImageModel> images = ImageModel.getImagesList(list: data['images']);
+
+        return ImagesGrid(images: images);
+      }
     );
   }
 }

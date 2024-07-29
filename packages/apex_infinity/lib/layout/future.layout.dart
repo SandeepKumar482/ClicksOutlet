@@ -24,7 +24,7 @@ class AxFutureBuilder extends StatefulWidget {
 
 class _AxFutureBuilderState extends State<AxFutureBuilder> {
 
-  late Future _future;
+  Future? _future;
 
   @override
   void initState() {
@@ -51,14 +51,17 @@ class _AxFutureBuilderState extends State<AxFutureBuilder> {
     return FutureBuilder(
       future: _future ,
       builder: (BuildContext ctx,AsyncSnapshot snapShot) {
-        print(snapShot.error);
-        print(snapShot.data);
         if(snapShot.hasData) {
           final dynamic data = snapShot.data;
 
           if(data is AxHttpResponse) {
             if(data.status) {
-              return widget.childBuilder(data.data);
+              return RefreshIndicator(
+                child:widget.childBuilder(data.data) ,
+                onRefresh: () async {
+                  _callFuture();
+                }
+              );
             } else {
               return Text( data.msg ?? "Something Went Wrong");
             }

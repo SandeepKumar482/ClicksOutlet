@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
+import 'package:apex_infinity/layout/future.layout.dart';
 import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
-import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
+import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -53,6 +54,7 @@ class _MyUploadsState extends State<MyUploads> {
 
   @override
   Widget build(BuildContext context) {
+
     final FloatingActionButton floatingActionButton = FloatingActionButton(
       onPressed: () async {
         userDetailsModel = UserDetailsModel.fromSP();
@@ -75,26 +77,31 @@ class _MyUploadsState extends State<MyUploads> {
       ),
     );
 
-    if (userDetailsModel.id == null) {
-      return Center(
-        child: floatingActionButton,
-      );
-    } else {
-      fetchImageList();
-      return Column(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                _UserProfile(userDetailsModel: userDetailsModel),
-                Expanded(child: ImagesGrid(getImages: getImages)),
-              ],
-            ),
-          ),
-          floatingActionButton
-        ],
-      );
-    }
+    return AxFutureBuilder(
+      url: widget.navigationData.path,
+      childBuilder: (data) {
+        if(data['uid'].toString().isNotEmpty) {
+          return Center(
+            child: floatingActionButton,
+          );
+        } else {
+         return Column(
+           children: [
+             Expanded(
+               child: Column(
+                 children: [
+                   _UserProfile(userDetailsModel: userDetailsModel),
+                   // Expanded(child: ImagesGrid(getImages: getImages)),
+                 ],
+               ),
+             ),
+             floatingActionButton
+           ],
+         );
+        }
+      }
+    );
+
   }
 
   Future<void> selectAnduploadImage() async {
@@ -152,7 +159,7 @@ class _MyUploadsState extends State<MyUploads> {
                     FilledButton(
                       onPressed: () async {
                         AxHttpResponse response = await Ax.httpRequest.post(
-                          url: '/images/',
+                          url: RoutesConfig.myUploads,
                           body: {
                             'image' : File(file.path),
                             'caption' : caption.text,
