@@ -17,20 +17,6 @@ class TrendingClicks extends StatefulWidget {
 
 class _TrendingClicksState extends State<TrendingClicks> {
 
-  Future<List<ImageModel>>? getImages;
-
-  void fetchImageList() {
-    setState(() {
-      getImages = ImageCollectionService().getImages();
-    });
-  }
-
-  @override
-  void initState() {
-    fetchImageList();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return AxFutureBuilder(

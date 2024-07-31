@@ -36,6 +36,10 @@ class AxHttpRequest {
       finalHeaders.addAll(extraHeaders);
     }
 
+    // finalHeaders.addAll({
+    //   'cookie': 'PHPSESSID=vsma7oi1mmbrsgtv4fimdc8b0c'
+    // });
+
     if(params.isNotEmpty) {
       String queryString = "?";
       params.forEach((key,vale) {
@@ -51,6 +55,7 @@ class AxHttpRequest {
       Response res = await http.get(Uri.parse(fullUrl), headers: finalHeaders);
 
       Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      _setCookie(headers:res.headers);
 
       if(res.statusCode == 200) {
         response = AxHttpResponse(
@@ -101,7 +106,7 @@ class AxHttpRequest {
     try {
       MultipartRequest request = http.MultipartRequest('POST',Uri.parse(fullUrl));
       request.headers.addAll(finalHeaders);
-      
+
       Map<String, String> fields = {};
       List<MultipartFile> files = [];
       
@@ -123,6 +128,7 @@ class AxHttpRequest {
       final resData = await res.stream.bytesToString();
 
       Map<String, dynamic> jsonResponse = jsonDecode(resData);
+      _setCookie(headers: res.headers);
 
       if(res.statusCode == 200) {
         response = AxHttpResponse(
@@ -146,6 +152,19 @@ class AxHttpRequest {
         msg: "enable to decode Response"
       );
     }
+
+    return response;
+
+  }
+
+  void _setCookie({required Map<String,String> headers}) {
+    if(headers['set-cookie'] != null) {
+      _headers['cookie'] = headers['set-cookie'].toString();
+    }
+  }
+  AxHttpResponse _response() {
+
+    AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
 
     return response;
 
