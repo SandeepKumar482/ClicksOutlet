@@ -6,6 +6,7 @@ import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
+import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
@@ -80,22 +81,19 @@ class _MyUploadsState extends State<MyUploads> {
     return AxFutureBuilder(
       url: widget.navigationData.path,
       childBuilder: (data) {
-        if(data['uid'].toString().isNotEmpty) {
+        print(data);
+        if(data['uid'] == null) {
+          print("fsdf");
           return Center(
             child: floatingActionButton,
           );
         } else {
          return Column(
            children: [
+             _UserProfile(userDetailsModel: userDetailsModel),
              Expanded(
-               child: Column(
-                 children: [
-                   _UserProfile(userDetailsModel: userDetailsModel),
-                   // Expanded(child: ImagesGrid(getImages: getImages)),
-                 ],
-               ),
-             ),
-             floatingActionButton
+               child:ImagesGrid(images: ImageModel.getImagesList(list: data['images']))
+             )
            ],
          );
         }
@@ -213,7 +211,7 @@ class _UserProfile extends StatelessWidget {
                 const SizedBox(
                   width: 25.0,
                 ),
-                Text(userDetailsModel.name ?? "Any"),
+                Text(userDetailsModel.userName ?? "Any"),
               ],
             ),
             ElevatedButton(
