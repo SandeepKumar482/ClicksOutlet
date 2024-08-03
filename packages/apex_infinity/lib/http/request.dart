@@ -133,8 +133,12 @@ class AxHttpRequest {
 
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
-      Map<String, dynamic> jsonResponse = jsonDecode(res.data);
-
+      Map<String, dynamic> jsonResponse ;
+      if(res.data is Map) {
+        jsonResponse = res.data;
+      } else {
+        jsonResponse = jsonDecode(res.data);
+      }
       if(res.statusCode == 200) {
         response = AxHttpResponse(
             status: jsonResponse['status'] ?? false,
