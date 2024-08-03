@@ -121,18 +121,21 @@ class AxHttpRequest {
       FormData formData = FormData();
       
       for(var data in body.entries ){
-        if(data.value is File) {
-
-          MultipartFile multipartFile = await MultipartFile.fromFile(data.value.path);
-
-          formData.files.add(MapEntry(data.key,multipartFile));
-        } else {
-          formData.fields.add(MapEntry(data.key, data.value));
+        if (data.value != null) {
+          if(data.value is File) {
+          
+            MultipartFile multipartFile = await MultipartFile.fromFile(data.value.path);
+          
+            formData.files.add(MapEntry(data.key,multipartFile));
+          } else {
+            formData.fields.add(MapEntry(data.key, data.value));
+          }
         }
       }
-
+print("object");
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
+      print("sdfs ${res.data}");
       Map<String, dynamic> jsonResponse ;
       if(res.data is Map) {
         jsonResponse = res.data;
