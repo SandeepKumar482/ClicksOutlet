@@ -23,7 +23,7 @@ Future<void> main() async {
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   await SharedPreference.init();
 
-  Ax.httpRequest.configRequest(
+await Ax.httpRequest.configRequest(
     baseUrl: config.baseUrl,
     headers: {
       'Content-Type': 'application/json',
