@@ -10,7 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 final Config config = Config(
-  baseUrl: "http://192.168.208.134:120",
+  baseUrl: "https://slategray-peafowl-388760.hostingersite.com",
   apiKey: 'adba4a4c24b866fa7a997f65009b0e255683f5f7'
 );
 

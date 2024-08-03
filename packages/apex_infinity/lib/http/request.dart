@@ -128,14 +128,12 @@ class AxHttpRequest {
           
             formData.files.add(MapEntry(data.key,multipartFile));
           } else {
-            formData.fields.add(MapEntry(data.key, data.value));
+            formData.fields.add(MapEntry(data.key, data.value.toString()));
           }
         }
       }
-print("object");
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
-      print("sdfs ${res.data}");
       Map<String, dynamic> jsonResponse ;
       if(res.data is Map) {
         jsonResponse = res.data;
