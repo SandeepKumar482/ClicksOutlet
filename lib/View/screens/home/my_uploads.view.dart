@@ -91,6 +91,12 @@ class _MyUploadsState extends State<MyUploads> {
          return Column(
            children: [
              _UserProfile(userDetailsModel: userDetailsModel),
+             FilledButton(
+               onPressed: ()async {
+                await selectAnduploadImage();
+               },
+               child: Text("upload")
+             ),
              Expanded(
                child:ImagesGrid(images: ImageModel.getImagesList(list: data['images']))
              )

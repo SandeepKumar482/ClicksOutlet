@@ -7,11 +7,17 @@ import 'package:clicks_outlet/routers/router.dart';
 import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-final Config config = Config(
-  baseUrl: "https://slategray-peafowl-388760.hostingersite.com",
-  apiKey: 'adba4a4c24b866fa7a997f65009b0e255683f5f7'
+final Config config = kReleaseMode
+  ? Config(
+    baseUrl: "https://api.clicksoutlet.in",
+    apiKey: 'adba4a4c24b866fa7a997f65009b0e255683f5f7'
+  )
+  :  Config(
+    baseUrl: "https://slategray-peafowl-388760.hostingersite.com",
+    apiKey: 'adba4a4c24b866fa7a997f65009b0e255683f5f7'
 );
 
 Future<void> main() async {
