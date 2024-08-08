@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:apex_infinity/utils/snack_bar.util.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/constants/style.dart';
-import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -93,10 +93,11 @@ class _MyProfileState extends State<MyProfile> {
                 prefixIcon: const Icon(Icons.label_important_outline),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    FloatingMsg.show(
+                    AxSnackBar(
                         context: context,
-                        msg: "OOPS!! Please Enter a Valid Name",
-                        msgType: MsgType.error);
+                        message: "OOPS!! Please Enter a Valid Name",
+                        msgType: AxSnackBarMsgType.error
+                    ).show();
                     return ' ';
                   } else {
                     return null;
@@ -113,10 +114,11 @@ class _MyProfileState extends State<MyProfile> {
                 prefixIcon: const Icon(Icons.email_outlined),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    FloatingMsg.show(
+                    AxSnackBar(
                         context: context,
-                        msg: "OOPS!! Please Enter a Valid Name",
-                        msgType: MsgType.error);
+                        message: "OOPS!! Please Enter a Valid Name" ,
+                        msgType: AxSnackBarMsgType.error
+                    ).show();
                     return ' ';
                   } else {
                     return null;
@@ -133,10 +135,11 @@ class _MyProfileState extends State<MyProfile> {
                 prefixIcon: const Icon(Icons.phone_android_outlined),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    FloatingMsg.show(
+                    AxSnackBar(
                         context: context,
-                        msg: "OOPS!! Please Enter a Valid Name",
-                        msgType: MsgType.error);
+                        message: "OOPS!! Please Enter a Valid Name",
+                        msgType: AxSnackBarMsgType.error
+                    ).show();
                     return ' ';
                   } else {
                     return null;

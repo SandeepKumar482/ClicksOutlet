@@ -3,6 +3,7 @@ import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
 import 'package:apex_infinity/layout/future.layout.dart';
 import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
+import 'package:apex_infinity/utils/snack_bar.util.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
@@ -11,7 +12,6 @@ import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
-import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/HashtagBubble.dart';
@@ -112,11 +112,11 @@ class _MyUploadsState extends State<MyUploads> {
     XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
 
     if (selectedImage == null) {
-      FloatingMsg.show(
+      AxSnackBar(
         context: context,
-        msg: "Please Select A Image",
-        msgType: MsgType.error
-      );
+        message: "Please Select A Image",
+        msgType: AxSnackBarMsgType.error
+      ).show();
     } else {
       File file = File(selectedImage.path);
       final d = await decodeImageFromList(file.readAsBytesSync());
@@ -176,7 +176,11 @@ class _MyUploadsState extends State<MyUploads> {
                         if(response.status) {
                           Ax.goBack();
                         } else {
-                          FloatingMsg.show(context: context, msg: response.msg, msgType: MsgType.error);
+                          AxSnackBar(
+                            context: context,
+                            message: response.msg,
+                            msgType: AxSnackBarMsgType.error
+                          ).show();
                         }
                       },
                       child: const Text("Upload"),

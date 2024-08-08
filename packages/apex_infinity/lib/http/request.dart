@@ -29,11 +29,6 @@ class AxHttpRequest {
     Map<String, String> params = const {},
     Map<String, String> extraHeaders = const {}}) async {
 
-    AxHttpResponse response = AxHttpResponse(
-      status: false,
-      statusCode: 600,
-    );
-
     final Uri uri = Uri.parse(url);
 
     String fullUrl = "${_baseUrl ?? ""}${uri.path}";
@@ -60,40 +55,12 @@ class AxHttpRequest {
         headers: finalHeaders
       ));
 
-      Map<String, dynamic> jsonResponse = {};
-
-      if(res.data is Map) {
-        jsonResponse = res.data;
-      } else {
-        jsonResponse = jsonDecode(res.data);
-      }
-
-      if(res.statusCode == 200) {
-        response = AxHttpResponse(
-          status: jsonResponse['status'] ?? false,
-          statusCode: jsonResponse['status_code'] ?? res.statusCode,
-          msg: jsonResponse['msg'],
-          data: jsonResponse['data'],
-          redirectUrl: jsonResponse['redirect_url'],
-        );
-      } else {
-        response = AxHttpResponse(
-          status: false,
-          statusCode: res.statusCode ?? 0,
-          msg: "Some Issue While Getting Data"
-        );
-      }
-
+      return _response(res: res);
     } catch (e) {
-      print(e);
-      response = AxHttpResponse(
-        status: false,
-        statusCode: 600,
-        msg: "enable to decode Response"
-      );
+      _response(res: null);
     }
 
-    return response;
+    return _response(res: null);
   }
 
   Future<AxHttpResponse> post({
@@ -102,7 +69,6 @@ class AxHttpRequest {
     Map<String, String> extraHeaders = const {}
   }) async {
 
-    AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
 
     final Uri uri = Uri.parse(url);
 
@@ -134,19 +100,36 @@ class AxHttpRequest {
       }
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
+
+      return _response(res: res);
+
+    } catch (e) {
+      print(e);
+      _response(res: null);
+    }
+
+    return _response(res: null);
+
+  }
+
+  AxHttpResponse _response({required Response? res}) {
+    AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
+
+    if (res != null) {
       Map<String, dynamic> jsonResponse ;
       if(res.data is Map) {
         jsonResponse = res.data;
       } else {
         jsonResponse = jsonDecode(res.data);
       }
+
       if(res.statusCode == 200) {
         response = AxHttpResponse(
-            status: jsonResponse['status'] ?? false,
-            statusCode: jsonResponse['status_code'] ?? res.statusCode,
-            msg: jsonResponse['msg'],
-            data: jsonResponse['data'] ?? {},
-            redirectUrl: jsonResponse['redirect_url'],
+          status: jsonResponse['status'] ?? false,
+          statusCode: jsonResponse['status_code'] ?? res.statusCode,
+          msg: jsonResponse['msg'],
+          data: jsonResponse['data'] ?? {},
+          redirectUrl: jsonResponse['redirect_url'],
         );
       } else {
         response = AxHttpResponse(
@@ -155,17 +138,8 @@ class AxHttpRequest {
             msg: "Some Issue While Getting Data"
         );
       }
-    } catch (e) {
-      print(e);
-      response = AxHttpResponse(
-        status: false,
-        statusCode: 600,
-        msg: "enable to decode Response"
-      );
     }
-
     return response;
-
   }
 
 }

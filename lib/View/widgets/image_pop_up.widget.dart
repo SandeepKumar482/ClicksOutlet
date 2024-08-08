@@ -1,6 +1,6 @@
+import 'package:apex_infinity/utils/snack_bar.util.dart';
 import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/model/click.model.dart';
-import 'package:clicks_outlet/utils/floating_msg.util.dart';
 import 'package:flutter/material.dart';
 
 
@@ -51,15 +51,17 @@ class ImageDialog extends StatelessWidget {
                           try {
                             await ImageCollectionService()
                                 .downloadAndSaveImage(imageModel.imageUrl);
-                            FloatingMsg.show(
-                                context: context,
-                                msg: "Image Saved!",
-                                msgType: MsgType.success);
+                            AxSnackBar(
+                              context: context,
+                              message: "Image Saved!",
+                              msgType: AxSnackBarMsgType.error
+                            ).show();
                           } catch (e) {
-                            FloatingMsg.show(
-                                context: context,
-                                msg: e.toString(),
-                                msgType: MsgType.error);
+                            AxSnackBar(
+                              context: context,
+                              message: e.toString(),
+                              msgType: AxSnackBarMsgType.error
+                            ).show();
                           }
                         },
                       ),
