@@ -1,4 +1,4 @@
-import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
+import 'package:apex_infinity/navigation/navigation_data.model.dart';
 import 'package:flutter/material.dart';
 
 class LikedClicks extends StatelessWidget {

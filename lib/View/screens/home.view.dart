@@ -1,10 +1,9 @@
-import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
-import 'package:apex_infinity/navigation/navigator.dart';
+import 'package:apex_infinity/navigation/navigation_data.model.dart';
 import 'package:clicks_outlet/View/screens/home/liked.view.dart';
+import 'package:clicks_outlet/View/screens/home/my_account.dart';
 import 'package:clicks_outlet/View/screens/home/my_uploads.view.dart';
 import 'package:clicks_outlet/View/screens/home/trending_clicks.view.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
-import 'package:clicks_outlet/View/widgets/side_draswer.widget.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -34,23 +33,26 @@ class _HomeState extends State<Home> {
       _BottomNavItems(
         index: 0,
         key: RoutesConfig.trending,
-        path: RoutesConfig.trending,
         icon: const Icon(Icons.home, size: 30),
         page: TrendingClicks( navigationData: widget.navigationData,)
       ),
       _BottomNavItems(
         index: 1,
         key: RoutesConfig.liked,
-        path: RoutesConfig.liked,
         icon: const Icon(Icons.favorite, size: 30),
         page: LikedClicks(navigationData: widget.navigationData,)
       ),
       _BottomNavItems(
         index: 2,
         key: RoutesConfig.myUploads,
-        path: RoutesConfig.myUploads,
         icon: const Icon(Icons.photo_album_outlined, size: 30),
         page: MyUploads(navigationData: widget.navigationData,)
+      ),
+      _BottomNavItems(
+        index: 3,
+        key: RoutesConfig.myAccount,
+        icon: const Icon(Icons.account_circle_outlined, size: 30),
+        page: MyAccount(navigationData: widget.navigationData,)
       ),
     ];
 
@@ -75,7 +77,6 @@ class _HomeState extends State<Home> {
             word2: "Outlet",
           ),
         ),
-        drawer: const SideDrawer(),
         bottomNavigationBar: CurvedNavigationBar(
           key: Key(_bottomItems[_currentIndex].key),
           height: 64,
@@ -87,11 +88,9 @@ class _HomeState extends State<Home> {
               _currentIndex = index;
             });
           },
-          items: const [
-            Icon(Icons.home, size: 30),
-            Icon(Icons.favorite, size: 30),
-            Icon(Icons.photo_album_outlined, size: 30),
-          ],
+          items: _bottomItems.map<Widget>((navItem){
+            return navItem.icon;
+          }).toList(),
         ),
         body: Center(child: _bottomItems[_currentIndex].page));
   }
@@ -100,14 +99,12 @@ class _HomeState extends State<Home> {
 class _BottomNavItems {
   final int index;
   final String key;
-  final String path;
   final Widget icon;
   final Widget page;
 
   _BottomNavItems(
       {required this.index,
       required this.key,
-      required this.path,
       required this.icon,
       required this.page});
 }

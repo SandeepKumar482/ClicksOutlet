@@ -2,18 +2,19 @@ import 'dart:io';
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
 import 'package:apex_infinity/layout/future.layout.dart';
-import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
+import 'package:apex_infinity/navigation/navigation_data.model.dart';
 import 'package:apex_infinity/utils/snack_bar.util.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
-import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/bloc/main.bloc.dart';
 import 'package:clicks_outlet/config/api.config.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/HashtagBubble.dart';
 
@@ -30,10 +31,8 @@ class MyUploads extends StatefulWidget {
 class _MyUploadsState extends State<MyUploads> {
   List<ImageModel> imageList = [];
 
-  UserDetailsModel userDetailsModel = UserDetailsModel.fromSP();
   final ImagePicker _picker = ImagePicker();
   late HashtagEditingController _controller;
-  Future<List<ImageModel>>? getImages;
 
   @override
   void initState() {
@@ -47,31 +46,23 @@ class _MyUploadsState extends State<MyUploads> {
     super.dispose();
   }
 
-  void fetchImageList() {
-    setState(() {
-      getImages =
-          ImageCollectionService().getImages(userId: userDetailsModel.id);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
 
+    MainCubit mainCubit = context.read<MainCubit>();
+
     final FloatingActionButton floatingActionButton = FloatingActionButton(
       onPressed: () async {
-        userDetailsModel = UserDetailsModel.fromSP();
-        if (userDetailsModel.id == null) {
-          await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (ctx) {
-                return const Auth();
-              });
-          setState(() {
-            userDetailsModel = UserDetailsModel.fromSP();
-          });
+        if (mainCubit.isAuthenticated()) {
+          await selectAndUploadImage();
         } else {
-          await selectAnduploadImage();
+          await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) {
+              return const Auth();
+            });
         }
       },
       child: const Icon(
@@ -79,35 +70,35 @@ class _MyUploadsState extends State<MyUploads> {
       ),
     );
 
-    return AxFutureBuilder(
-      url: APIConfig.myUploads,
-      childBuilder: (data) {
-        if(data['uid'] == null) {
-          return Center(
-            child: floatingActionButton,
-          );
-        } else {
-         return Column(
-           children: [
-             _UserProfile(userDetailsModel: userDetailsModel),
-             FilledButton(
-               onPressed: ()async {
-                await selectAnduploadImage();
-               },
-               child: Text("upload")
-             ),
-             Expanded(
-               child:ImagesGrid(images: ImageModel.getImagesList(list: data['images']))
-             )
-           ],
-         );
-        }
-      }
-    );
+    switch(mainCubit.state) {
+      case MainCubitState.guestUser:
+        return Center(
+          child: floatingActionButton,
+        );
+      case MainCubitState.authenticated:
+        return AxFutureBuilder(
+          url: APIConfig.myUploads,
+          childBuilder: (data) {
+
+            List<ImageModel> imagesList = ImageModel.getImagesList(list: data['images']);
+            if(imagesList.isEmpty) {
+              return Center(
+                child: floatingActionButton,
+              );
+            } else {
+              return Scaffold(
+                body: ImagesGrid(images: imagesList ),
+                floatingActionButton: floatingActionButton,
+                floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              );
+            }
+          }
+      );
+    }
 
   }
 
-  Future<void> selectAnduploadImage() async {
+  Future<void> selectAndUploadImage() async {
     XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
 
     if (selectedImage == null) {

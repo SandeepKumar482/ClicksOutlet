@@ -1,6 +1,6 @@
 library apex_infinity;
 
-import 'package:apex_infinity/navigation/naviaftion_data.model.dart';
+import 'package:apex_infinity/navigation/navigation_data.model.dart';
 import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:flutter/material.dart';
 

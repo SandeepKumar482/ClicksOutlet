@@ -1,5 +1,6 @@
 import 'package:apex_infinity/apex_infinity.app.dart';
 import 'package:apex_infinity/apex_infinity.dart';
+import 'package:clicks_outlet/bloc/main.bloc.dart';
 import 'package:clicks_outlet/config/config.dart';
 import 'package:clicks_outlet/firebase_options.dart';
 import 'package:clicks_outlet/model/package.model.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 final Config config = kReleaseMode
   ? Config(
@@ -49,19 +51,18 @@ await Ax.httpRequest.configRequest(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    FirebaseMessaging.instance
-        .getToken()
-        .then((value) => debugPrint("token---->$value"));
 
-    return AxApp(
-      routeResolver: routeResolver,
-      themeData: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
+    return BlocProvider(
+      create: (_) => MainCubit(),
+      child: AxApp(
+        routeResolver: routeResolver,
+        themeData: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.green,
+        ),
+      ) ,
     );
   }
 }

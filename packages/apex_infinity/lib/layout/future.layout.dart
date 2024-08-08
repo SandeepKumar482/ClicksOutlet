@@ -71,7 +71,12 @@ class _AxFutureBuilderState extends State<AxFutureBuilder> {
         } else if(snapShot.hasError) {
           return const Text("Error");
         } else {
-          return const CircularProgressIndicator();
+          return const Column(
+            children: [
+              SizedBox(height: 150.0,),
+              CircularProgressIndicator(),
+            ],
+          );
         }
       }
     );

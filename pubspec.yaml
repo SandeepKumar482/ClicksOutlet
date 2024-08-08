@@ -34,6 +34,7 @@ dependencies:
   package_info_plus: ^8.0.0
   apex_infinity:
     path: ./packages/apex_infinity/
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   flutter_test:
