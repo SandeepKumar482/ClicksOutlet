@@ -20,32 +20,48 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  List<_BottomNavItems> _bottomItems = [];
+  int _currentIndex = 0;
+
   @override
-  Widget build(BuildContext context) {
-    List<_BottomNavItems> bottomItems = [
+  void initState() {
+    _updatePages();
+    super.initState();
+  }
+
+  void _updatePages() {
+    _bottomItems = [
       _BottomNavItems(
-          index: 0,
-          key: RoutesConfig.trending,
-          path: RoutesConfig.trending,
-          icon: const Icon(Icons.home, size: 30),
-          page: TrendingClicks( navigationData: widget.navigationData,)),
+        index: 0,
+        key: RoutesConfig.trending,
+        path: RoutesConfig.trending,
+        icon: const Icon(Icons.home, size: 30),
+        page: TrendingClicks( navigationData: widget.navigationData,)
+      ),
       _BottomNavItems(
-          index: 1,
-          key: RoutesConfig.liked,
-          path: RoutesConfig.liked,
-          icon: const Icon(Icons.favorite, size: 30),
-          page: LikedClicks(navigationData: widget.navigationData,)),
+        index: 1,
+        key: RoutesConfig.liked,
+        path: RoutesConfig.liked,
+        icon: const Icon(Icons.favorite, size: 30),
+        page: LikedClicks(navigationData: widget.navigationData,)
+      ),
       _BottomNavItems(
-          index: 2,
-          key: RoutesConfig.myUploads,
-          path: RoutesConfig.myUploads,
-          icon: const Icon(Icons.photo_album_outlined, size: 30),
-          page: MyUploads(navigationData: widget.navigationData,)),
+        index: 2,
+        key: RoutesConfig.myUploads,
+        path: RoutesConfig.myUploads,
+        icon: const Icon(Icons.photo_album_outlined, size: 30),
+        page: MyUploads(navigationData: widget.navigationData,)
+      ),
     ];
 
-    int currentIndex = bottomItems.firstWhere((element) {
+    _currentIndex = _bottomItems.firstWhere((element) {
       return element.key == widget.navigationData.path;
-    }, orElse: () => bottomItems.first).index;
+    }, orElse: () => _bottomItems.first).index;
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
         key: _scaffoldKey,
@@ -61,13 +77,15 @@ class _HomeState extends State<Home> {
         ),
         drawer: const SideDrawer(),
         bottomNavigationBar: CurvedNavigationBar(
-          key: Key(bottomItems[currentIndex].key),
+          key: Key(_bottomItems[_currentIndex].key),
           height: 64,
           color: const Color(0xffB6F2AF),
           backgroundColor: Colors.transparent,
-          index: currentIndex,
+          index: _currentIndex,
           onTap: (index) {
-            AxNaviagtion.goTo(path: bottomItems[index].path);
+            setState(() {
+              _currentIndex = index;
+            });
           },
           items: const [
             Icon(Icons.home, size: 30),
@@ -75,7 +93,7 @@ class _HomeState extends State<Home> {
             Icon(Icons.photo_album_outlined, size: 30),
           ],
         ),
-        body: Center(child: bottomItems[currentIndex].page));
+        body: Center(child: _bottomItems[_currentIndex].page));
   }
 }
 

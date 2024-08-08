@@ -9,6 +9,7 @@ import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/View/screens/authentication/auth.view.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/config/api.config.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
@@ -79,11 +80,9 @@ class _MyUploadsState extends State<MyUploads> {
     );
 
     return AxFutureBuilder(
-      url: widget.navigationData.path,
+      url: APIConfig.myUploads,
       childBuilder: (data) {
-        print(data);
         if(data['uid'] == null) {
-          print("fsdf");
           return Center(
             child: floatingActionButton,
           );
