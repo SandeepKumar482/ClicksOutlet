@@ -1,6 +1,7 @@
 import 'package:apex_infinity/http/request.dart';
 import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:apex_infinity/theme/theme.dart';
+import 'package:apex_infinity/utils/shared_prefernce.util.dart';
 
 const AxThemeData themeData = AxThemeData();
 
@@ -12,6 +13,7 @@ class Ax {
   }
 
   static final AxHttpRequest httpRequest = AxHttpRequest();
+  static final AxSharedPreference sharedPreference = AxSharedPreference();
 }
 
 extension AxE on dynamic {

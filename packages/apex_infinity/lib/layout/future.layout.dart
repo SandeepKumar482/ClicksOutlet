@@ -4,16 +4,12 @@ import 'package:flutter/material.dart';
 
 class AxFutureBuilder extends StatefulWidget {
 
-  final String? url;
-  final Map<String,String> queryParameters;
   final Future Function()? future;
   final Future Function()? onRetry;
   final Widget Function(dynamic data) childBuilder;
 
   const AxFutureBuilder({
     required this.childBuilder,
-    this.url,
-    this.queryParameters = const {},
     this.future,
     this.onRetry,
 });
@@ -33,9 +29,7 @@ class _AxFutureBuilderState extends State<AxFutureBuilder> {
   }
 
   void _callFuture() {
-    if(widget.url != null) {
-      _future = Ax.httpRequest.get(url: widget.url!,params: widget.queryParameters);
-    } else if(widget.future != null) {
+    if(widget.future != null) {
       _future = widget.future!();
     } else {
       _future = Future.delayed(Duration.zero);

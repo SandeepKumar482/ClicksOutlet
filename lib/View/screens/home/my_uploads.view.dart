@@ -33,11 +33,13 @@ class _MyUploadsState extends State<MyUploads> {
 
   final ImagePicker _picker = ImagePicker();
   late HashtagEditingController _controller;
+  Future<dynamic> Function()?  apiData;
 
   @override
   void initState() {
-    super.initState();
+    apiData = ()=> Ax.httpRequest.get(url: APIConfig.myUploads);
     _controller = HashtagEditingController();
+    super.initState();
   }
 
   @override
@@ -77,7 +79,7 @@ class _MyUploadsState extends State<MyUploads> {
         );
       case MainCubitState.authenticated:
         return AxFutureBuilder(
-          url: APIConfig.myUploads,
+          future: apiData,
           childBuilder: (data) {
 
             List<ImageModel> imagesList = ImageModel.getImagesList(list: data['images']);

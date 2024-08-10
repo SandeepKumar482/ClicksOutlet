@@ -1,5 +1,4 @@
 import 'package:apex_infinity/utils/snack_bar.util.dart';
-import 'package:clicks_outlet/FirebaseService/image_collection.service.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:flutter/material.dart';
 
@@ -49,8 +48,8 @@ class ImageDialog extends StatelessWidget {
                         onPressed: () async {
                           // Add your download logic here.
                           try {
-                            await ImageCollectionService()
-                                .downloadAndSaveImage(imageModel.imageUrl);
+                            // await ImageCollectionService()
+                            //     .downloadAndSaveImage(imageModel.imageUrl);
                             AxSnackBar(
                               context: context,
                               message: "Image Saved!",

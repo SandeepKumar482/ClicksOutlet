@@ -1,4 +1,5 @@
-import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
+import 'package:apex_infinity/apex_infinity.dart';
+import 'package:clicks_outlet/config/shared_preferences.Config.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class PackageInfoModel {
@@ -11,10 +12,10 @@ class PackageInfoModel {
     await PackageInfo.fromPlatform().then((value) async {
       PackageInfoModel packageInfoModel =
           PackageInfoModel(version: value.version, build: value.buildNumber);
-      if (!SharedPreference.isKeyExits(key: SharedPreferenceKey.packageInfo)) {
-        await SharedPreference.clearData();
+      if (!Ax.sharedPreference.isKeyExits(key: SharedPreferenceKey.packageInfo)) {
+        await Ax.sharedPreference.clearData();
       }
-      await SharedPreference.setJson(
+      await Ax.sharedPreference.setJson(
           key: SharedPreferenceKey.packageInfo,
           value: packageInfoModel.toJson());
     });
@@ -27,7 +28,7 @@ class PackageInfoModel {
 
   static PackageInfoModel fromSP() {
     Map<String, dynamic> parseData =
-        SharedPreference.getJson(key: SharedPreferenceKey.packageInfo);
+    Ax.sharedPreference.getJson(key: SharedPreferenceKey.packageInfo);
 
     return PackageInfoModel.fromJson(parseData);
   }

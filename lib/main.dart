@@ -5,7 +5,6 @@ import 'package:clicks_outlet/config/config.dart';
 import 'package:clicks_outlet/firebase_options.dart';
 import 'package:clicks_outlet/model/package.model.dart';
 import 'package:clicks_outlet/routers/router.dart';
-import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -29,9 +28,9 @@ Future<void> main() async {
   );
 
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  await SharedPreference.init();
 
-await Ax.httpRequest.configRequest(
+  await Ax.sharedPreference.init();
+  await Ax.httpRequest.configRequest(
     baseUrl: config.baseUrl,
     headers: {
       'Content-Type': 'application/json',

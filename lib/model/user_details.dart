@@ -1,5 +1,5 @@
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:clicks_outlet/main.dart';
-import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
 
 class UserDetailsModel {
   static const String spKey = 'user_data';
@@ -45,12 +45,12 @@ class UserDetailsModel {
 
   factory UserDetailsModel.fromSP() {
     Map<String, dynamic> data =
-        SharedPreference.getJson(key: UserDetailsModel.spKey);
+    Ax.sharedPreference.getJson(key: UserDetailsModel.spKey);
     return UserDetailsModel.fromMap(map: data);
   }
 
   Future<bool> setToSP() async {
-    return SharedPreference.setJson(
+    return Ax.sharedPreference.setJson(
         key: UserDetailsModel.spKey, value: toMap());
   }
 }

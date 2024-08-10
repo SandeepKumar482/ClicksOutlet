@@ -5,6 +5,7 @@ import 'package:apex_infinity/http/response.dart';
 import 'package:apex_infinity/layout/future.layout.dart';
 import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/config/api.config.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -14,7 +15,7 @@ class RegisterView extends StatefulWidget {
   final String urlPath;
   final Map<String, String> queryParams;
 
-  const RegisterView(
+   const RegisterView(
       {super.key, required this.urlPath, this.queryParams = const {}});
 
   @override
@@ -22,6 +23,16 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+
+  Future<dynamic> Function()?  apiData;
+
+  @override
+  void initState() {
+    apiData = ()=> Ax.httpRequest.get(url: APIConfig.register,params: widget.queryParams);
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -49,11 +60,8 @@ class _RegisterViewState extends State<RegisterView> {
         ),
       ),
       body: AxFutureBuilder(
-        url: widget.urlPath,
-        queryParameters: widget.queryParams,
+        future: apiData,
         childBuilder: (data) {
-          //labelName.text = data['label_name'] ?? "";
-          print(data);
           return StatefulBuilder(builder: (context, state) {
             return SingleChildScrollView(
               child: Padding(

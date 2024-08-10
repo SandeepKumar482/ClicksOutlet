@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:apex_infinity/http/cache_rule.dart';
 import 'package:apex_infinity/http/response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -24,10 +25,13 @@ class AxHttpRequest {
     _dio.interceptors.add(CookieManager(PersistCookieJar(storage: FileStorage(dir.path))));
   }
 
-  Future<AxHttpResponse> get(
-    {required String url,
-    Map<String, String> params = const {},
-    Map<String, String> extraHeaders = const {}}) async {
+  Future<AxHttpResponse> get({
+    required String url,
+      Map<String, String> params = const {},
+      Map<String, String> extraHeaders = const {},
+      bool isRefreshCache = false,
+      AxRequestCacheRule? cacheRule
+    }) async {
 
     final Uri uri = Uri.parse(url);
 
@@ -50,17 +54,21 @@ class AxHttpRequest {
     debugPrint("************************* GET  REQUEST *****************************");
     debugPrint(fullUrl);
 
-    try {
-      Response res = await _dio.get(fullUrl, options: Options(
-        headers: finalHeaders
-      ));
+    if(!(cacheRule?.isDataExpired() ?? true)) {
+      debugPrint("************************* FROM CACHE *****************************");
+      return _response(data: cacheRule!.getData());
+    } else {
+      await cacheRule?.clearData();
+      try {
+        Response res = await _dio.get(fullUrl, options: Options(
+            headers: finalHeaders
+        ));
 
-      return _response(res: res);
-    } catch (e) {
-      _response(res: null);
+        return _response(data: res.data,statusCode: res.statusCode,cacheRule: cacheRule);
+      } catch (e) {
+       return _response(data: null);
+      }
     }
-
-    return _response(res: null);
   }
 
   Future<AxHttpResponse> post({
@@ -101,32 +109,33 @@ class AxHttpRequest {
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
 
-      return _response(res: res);
+      return _response(data: res.data,statusCode: res.statusCode);
 
     } catch (e) {
       print(e);
-      _response(res: null);
+      _response(data: null);
     }
 
-    return _response(res: null);
+    return _response(data: null);
 
   }
 
-  AxHttpResponse _response({required Response? res}) {
+  AxHttpResponse _response({required dynamic data,int? statusCode,AxRequestCacheRule? cacheRule}) {
     AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
 
-    if (res != null) {
+    if (data != null) {
       Map<String, dynamic> jsonResponse ;
-      if(res.data is Map) {
-        jsonResponse = res.data;
+      if(data is Map<String,dynamic>) {
+        jsonResponse = data;
       } else {
-        jsonResponse = jsonDecode(res.data);
+        jsonResponse = jsonDecode(data);
       }
 
-      if(res.statusCode == 200) {
+      if(statusCode == 200 || jsonResponse.isNotEmpty) {
+        cacheRule?.setData(data: jsonResponse);
         response = AxHttpResponse(
           status: jsonResponse['status'] ?? false,
-          statusCode: jsonResponse['status_code'] ?? res.statusCode,
+          statusCode: jsonResponse['status_code'] ?? statusCode,
           msg: jsonResponse['msg'],
           data: jsonResponse['data'] ?? {},
           redirectUrl: jsonResponse['redirect_url'],
@@ -134,7 +143,7 @@ class AxHttpRequest {
       } else {
         response = AxHttpResponse(
             status: false,
-            statusCode: res.statusCode ?? 0,
+            statusCode: statusCode ?? 600,
             msg: "Some Issue While Getting Data"
         );
       }

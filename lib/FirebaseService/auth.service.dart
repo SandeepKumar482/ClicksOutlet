@@ -1,4 +1,4 @@
-import 'package:clicks_outlet/utils/shared_preferrences.util.dart';
+import 'package:apex_infinity/apex_infinity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -22,7 +22,7 @@ class GoogleAuthServices {
 
   static Future<bool> signOut() async {
     try {
-      SharedPreference.clear();
+      Ax.sharedPreference.clear();
       // TODO: Review it Return Type
       await GoogleSignIn().signOut();
       return true;

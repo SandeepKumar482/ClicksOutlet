@@ -24,34 +24,34 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    _updatePages();
+    _setPageData();
     super.initState();
   }
 
-  void _updatePages() {
+  void _setPageData() {
     _bottomItems = [
       _BottomNavItems(
         index: 0,
         key: RoutesConfig.trending,
-        icon: const Icon(Icons.home, size: 30),
+        iconData: Icons.home,
         page: TrendingClicks( navigationData: widget.navigationData,)
       ),
       _BottomNavItems(
         index: 1,
         key: RoutesConfig.liked,
-        icon: const Icon(Icons.favorite, size: 30),
+        iconData: Icons.home,
         page: LikedClicks(navigationData: widget.navigationData,)
       ),
       _BottomNavItems(
         index: 2,
         key: RoutesConfig.myUploads,
-        icon: const Icon(Icons.photo_album_outlined, size: 30),
+        iconData: Icons.photo_album_outlined,
         page: MyUploads(navigationData: widget.navigationData,)
       ),
       _BottomNavItems(
         index: 3,
         key: RoutesConfig.myAccount,
-        icon: const Icon(Icons.account_circle_outlined, size: 30),
+        iconData: Icons.account_circle_outlined,
         page: MyAccount(navigationData: widget.navigationData,)
       ),
     ];
@@ -66,45 +66,49 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        key: _scaffoldKey,
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0.0,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          title: const CustomAppBar(
-            word1: "Clicks",
-            word2: "Outlet",
-          ),
+        title: const CustomAppBar(
+          word1: "Clicks",
+          word2: "Outlet",
         ),
-        bottomNavigationBar: CurvedNavigationBar(
-          key: Key(_bottomItems[_currentIndex].key),
-          height: 64,
-          color: const Color(0xffB6F2AF),
-          backgroundColor: Colors.transparent,
-          index: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: _bottomItems.map<Widget>((navItem){
-            return navItem.icon;
-          }).toList(),
-        ),
-        body: Center(child: _bottomItems[_currentIndex].page));
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: Key(_bottomItems[_currentIndex].key),
+        height: 64,
+        color: const Color(0xffB6F2AF),
+        backgroundColor: Colors.transparent,
+        index: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: _bottomItems.map<Widget>((navItem){
+          return Icon(
+            navItem.iconData,
+            size: 30.0,
+          );
+        }).toList(),
+      ),
+      body: _bottomItems[_currentIndex].page,
+    );
   }
 }
 
 class _BottomNavItems {
   final int index;
   final String key;
-  final Widget icon;
+  final IconData iconData;
   final Widget page;
 
   _BottomNavItems(
       {required this.index,
       required this.key,
-      required this.icon,
+      required this.iconData,
       required this.page});
 }
