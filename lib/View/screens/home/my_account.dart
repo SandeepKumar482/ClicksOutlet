@@ -1,5 +1,7 @@
 import 'package:apex_infinity/navigation/navigation_data.model.dart';
+import 'package:clicks_outlet/bloc/main.bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyAccount extends StatelessWidget {
   final AxNavigationData navigationData;
@@ -14,7 +16,14 @@ class MyAccount extends StatelessWidget {
     double deviceHeight = MediaQuery.of(context).size.height;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [],
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            context.read<MainCubit>().logout();
+          },
+          child: Text("logout")
+        )
+      ],
     );
   }
 }

@@ -32,7 +32,7 @@ class SideDrawer extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 50.0,
                                     backgroundImage: NetworkImage(
-                                        userDetailsModel.profilePicture),
+                                        userDetailsModel.profilePicture!),
                                   ),
                                   const SizedBox(
                                     width: 15.0,
@@ -42,7 +42,7 @@ class SideDrawer extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        userDetailsModel.name ?? "Anonymous",
+                                        userDetailsModel.userName ?? "Anonymous",
                                         style: const TextStyle(fontSize: 16.0),
                                       ),
                                       const SizedBox(

@@ -22,7 +22,7 @@ class TrendingClicks extends StatelessWidget {
     apiData = () => Ax.httpRequest.get(
       url: APIConfig.home,
       cacheRule: AxRequestCacheRule(
-        key: APICacheKeys.trendingCLicks,
+        key: CacheKeys.trendingCLicks,
         duration: const Duration(hours: 1),
       )
     );

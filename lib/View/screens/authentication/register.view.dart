@@ -151,7 +151,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 // TODO : Upload User Image
                                 final AxHttpResponse response = await Ax
                                     .httpRequest
-                                    .post(url: '/register/', body: {
+                                    .post(url: APIConfig.register, body: {
                                   'email_id': data['email'],
                                   'user_name': userName.text,
                                   'label_name': labelName.text,
@@ -161,8 +161,6 @@ class _RegisterViewState extends State<RegisterView> {
                                 if (response.status) {
                                   AxNaviagtion.goTo(path: '/home/#trendings');
                                 }
-                                print(response.msg);
-                                print(data['email']);
                               },
                         child: Text(isImageUploading
                             ? "Uploading image ..."

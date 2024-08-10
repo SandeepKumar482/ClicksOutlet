@@ -7,10 +7,13 @@ import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/View/widgets/custom_app_bar.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/bloc/main.bloc.dart';
+import 'package:clicks_outlet/config/api.config.dart';
 import 'package:clicks_outlet/constants/style.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -71,8 +74,12 @@ class __AuthModelState extends State<_AuthModel> {
 
   String? verificationCode;
 
+  late MainCubit mainCubit;
+
   @override
   Widget build(BuildContext context) {
+    mainCubit = context.read<MainCubit>();
+
     if (currentAuthState == AuthState.userDetailsFill &&
         _userDetailsModel != null) {
       return _UserDetailsForm(userDetailsModel: _userDetailsModel!);
@@ -201,12 +208,14 @@ class __AuthModelState extends State<_AuthModel> {
    if(idToken == null) {
      AxSnackBar(context: context, message: "Something Went Wrong", msgType: AxSnackBarMsgType.error).show();
    } else {
-     final AxHttpResponse response = await  Ax.httpRequest.post(url: '/auth/',body: {
+     final AxHttpResponse response = await  Ax.httpRequest.post(
+       url: APIConfig.auth,body: {
        'auth_token' : idToken,
        'auth_provider' : "GOOGLE"
      });
 
      if(response.redirectUrl != null) {
+       mainCubit.getUserData();
        AxNaviagtion.goTo(path: response.redirectUrl);
      }
    }
@@ -314,7 +323,7 @@ class _UserDetailsFormState extends State<_UserDetailsForm> {
                   backgroundColor: Colors.greenAccent,
                   backgroundImage: profileImage?.path != null
                       ? Image.file(File(profileImage!.path)).image
-                      : NetworkImage(widget.userDetailsModel.profilePicture),
+                      : NetworkImage(widget.userDetailsModel.profilePicture!),
                   radius: 50.0,
                   child: profileImage?.path != null
                       ? null

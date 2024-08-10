@@ -10,6 +10,7 @@ import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
 import 'package:clicks_outlet/bloc/main.bloc.dart';
 import 'package:clicks_outlet/config/api.config.dart';
+import 'package:clicks_outlet/config/api_cache.config.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
@@ -39,6 +40,7 @@ class _MyUploadsState extends State<MyUploads> {
   void initState() {
     apiData = ()=> Ax.httpRequest.get(url: APIConfig.myUploads);
     _controller = HashtagEditingController();
+
     super.initState();
   }
 
@@ -166,6 +168,7 @@ class _MyUploadsState extends State<MyUploads> {
                         );
 
                         if(response.status) {
+                          Ax.sharedPreference.clearData(key: CacheKeys.trendingCLicks);
                           Ax.goBack();
                         } else {
                           AxSnackBar(
@@ -208,7 +211,7 @@ class _UserProfile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: NetworkImage(userDetailsModel.profilePicture),
+                  backgroundImage: NetworkImage(userDetailsModel.profilePicture!),
                 ),
                 const SizedBox(
                   width: 25.0,
