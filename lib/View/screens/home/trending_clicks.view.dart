@@ -5,6 +5,7 @@ import 'package:apex_infinity/navigation/navigation_data.model.dart';
 import 'package:clicks_outlet/View/widgets/images_grid.widget.dart';
 import 'package:clicks_outlet/View/widgets/my_search_bar.widget.dart';
 import 'package:clicks_outlet/config/api.config.dart';
+import 'package:clicks_outlet/config/api_cache.config.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class TrendingClicks extends StatelessWidget {
     apiData = () => Ax.httpRequest.get(
       url: APIConfig.home,
       cacheRule: AxRequestCacheRule(
-        key: "trending_clicks",
+        key: APICacheKeys.trendingCLicks,
         duration: const Duration(hours: 1),
       )
     );
