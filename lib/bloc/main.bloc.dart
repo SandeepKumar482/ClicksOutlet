@@ -1,10 +1,8 @@
 import 'package:apex_infinity/apex_infinity.dart';
 import 'package:apex_infinity/http/response.dart';
-import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/FirebaseService/auth.service.dart';
 import 'package:clicks_outlet/config/api.config.dart';
 import 'package:clicks_outlet/model/user_details.dart';
-import 'package:clicks_outlet/routers/routes.config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum MainCubitState {
@@ -32,15 +30,13 @@ class MainCubit extends Cubit<MainCubitState> {
 
   Future<void> getUserData() async {
     AxHttpResponse res = await Ax.httpRequest.get(url: APIConfig.useData);
+    userDetailsModel = null;
 
     if(res.status) {
       userDetailsModel = UserDetailsModel.fromMap(map: res.data['user-data']);
       userDetailsModel?.setToSP();
-    } else {
-      userDetailsModel = null;
     }
-
-    if(userDetailsModel != null) {
+    if(userDetailsModel?.id != null) {
       emit(MainCubitState.authenticated);
     }
 
@@ -49,12 +45,11 @@ class MainCubit extends Cubit<MainCubitState> {
   Future<void> logout() async {
     await GoogleAuthServices.signOut();
 
-    AxHttpResponse res = await Ax.httpRequest.get(url: APIConfig.logout);
+    await Ax.sharedPreference.clear();
 
-    String redirectUrl = res.redirectUrl ?? RoutesConfig.initial;
+    await Ax.httpRequest.get(url: APIConfig.logout,isFollowRedirect: true);
 
     emit(MainCubitState.guestUser);
-    AxNaviagtion.goTo(path: redirectUrl);
 
   }
 

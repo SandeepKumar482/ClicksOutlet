@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:apex_infinity/http/cache_rule.dart';
 import 'package:apex_infinity/http/response.dart';
+import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
@@ -30,6 +31,7 @@ class AxHttpRequest {
       Map<String, String> params = const {},
       Map<String, String> extraHeaders = const {},
       bool isRefreshCache = false,
+      bool isFollowRedirect = false,
       AxRequestCacheRule? cacheRule
     }) async {
 
@@ -64,7 +66,7 @@ class AxHttpRequest {
             headers: finalHeaders
         ));
 
-        return _response(data: res.data,statusCode: res.statusCode,cacheRule: cacheRule);
+        return _response(data: res.data,statusCode: res.statusCode,cacheRule: cacheRule,isFollowRedirect: isFollowRedirect);
       } catch (e) {
        return _response(data: null);
       }
@@ -74,7 +76,8 @@ class AxHttpRequest {
   Future<AxHttpResponse> post({
     required String url,
     Map<String, dynamic> body = const {},
-    Map<String, String> extraHeaders = const {}
+    Map<String, String> extraHeaders = const {},
+    bool isFollowRedirect = false,
   }) async {
 
 
@@ -109,18 +112,21 @@ class AxHttpRequest {
       Response res = await _dio.post(fullUrl,data:formData,options: Options(headers: finalHeaders));
 
 
-      return _response(data: res.data,statusCode: res.statusCode);
+      return _response(data: res.data,statusCode: res.statusCode,isFollowRedirect: isFollowRedirect);
 
     } catch (e) {
       print(e);
-      _response(data: null);
+      return _response(data: null);
     }
-
-    return _response(data: null);
 
   }
 
-  AxHttpResponse _response({required dynamic data,int? statusCode,AxRequestCacheRule? cacheRule}) {
+  AxHttpResponse _response({
+    required dynamic data,
+    int? statusCode,
+    bool isFollowRedirect = false,
+    AxRequestCacheRule? cacheRule
+  }) {
     AxHttpResponse response = AxHttpResponse(status: false, statusCode: 600);
 
     if (data != null) {
@@ -140,6 +146,10 @@ class AxHttpRequest {
           data: jsonResponse['data'] ?? {},
           redirectUrl: jsonResponse['redirect_url'],
         );
+
+        if(response.redirectUrl != null && isFollowRedirect) {
+          AxNaviagtion.goTo(path: response.redirectUrl,isReplacement: true);
+        }
       } else {
         response = AxHttpResponse(
             status: false,

@@ -14,6 +14,7 @@ import 'package:clicks_outlet/config/api_cache.config.dart';
 import 'package:clicks_outlet/model/click.model.dart';
 import 'package:clicks_outlet/model/user_details.dart';
 import 'package:clicks_outlet/routers/routes.config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,16 +59,7 @@ class _MyUploadsState extends State<MyUploads> {
 
     final FloatingActionButton floatingActionButton = FloatingActionButton(
       onPressed: () async {
-        if (mainCubit.isAuthenticated()) {
-          await selectAndUploadImage();
-        } else {
-          await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (ctx) {
-              return const Auth();
-            });
-        }
+        onpressed(cubit: mainCubit);
       },
       child: const Icon(
         Icons.add_a_photo_outlined,
@@ -102,6 +94,20 @@ class _MyUploadsState extends State<MyUploads> {
 
   }
 
+  Future<void> onpressed({required MainCubit cubit}) async{
+    if (cubit.isAuthenticated()) {
+      await selectAndUploadImage();
+    } else {
+      await showDialog(
+      context: context,
+      barrierDismissible: false,
+      routeSettings: RouteSettings(name:"dialog"),
+      builder: (ctx) {
+        return const Auth();
+      });
+    }
+  }
+
   Future<void> selectAndUploadImage() async {
     XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -124,6 +130,7 @@ class _MyUploadsState extends State<MyUploads> {
         showDragHandle: true,
         useSafeArea: true,
         context: context,
+        routeSettings: RouteSettings(name:"dialog"),
         builder: (ctx) {
           return SingleChildScrollView(
             child: Padding(

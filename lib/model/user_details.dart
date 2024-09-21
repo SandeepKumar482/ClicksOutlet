@@ -29,7 +29,7 @@ class UserDetailsModel {
 
   static UserDetailsModel fromMap({required Map<String, dynamic>? map}) {
     return UserDetailsModel(
-      id: map?['id'].toString(),
+      id: map?['id']?.toString(),
       labelName: map?['label_name'],
       userName: map?['user_name'],
       emailId: map?['emailId'],

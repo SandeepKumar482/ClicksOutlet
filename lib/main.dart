@@ -55,12 +55,17 @@ class MyApp extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => MainCubit(),
-      child: AxApp(
-        routeResolver: routeResolver,
-        themeData: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green,
-        ),
+      child: BlocConsumer<MainCubit,MainCubitState>(
+        listener: (n,s){},
+        builder: (BuildContext context,MainCubitState state) {
+          return  AxApp(
+            routeResolver: routeResolver,
+            themeData: ThemeData(
+              useMaterial3: true,
+              colorSchemeSeed: Colors.green,
+            ),
+          );
+        },
       ) ,
     );
   }

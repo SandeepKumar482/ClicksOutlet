@@ -208,16 +208,16 @@ class __AuthModelState extends State<_AuthModel> {
    if(idToken == null) {
      AxSnackBar(context: context, message: "Something Went Wrong", msgType: AxSnackBarMsgType.error).show();
    } else {
-     final AxHttpResponse response = await  Ax.httpRequest.post(
-       url: APIConfig.auth,body: {
-       'auth_token' : idToken,
-       'auth_provider' : "GOOGLE"
-     });
+     await  Ax.httpRequest.post(
+       url: APIConfig.auth,
+       body: {
+         'auth_token' : idToken,
+         'auth_provider' : "GOOGLE"
+       },
+       isFollowRedirect: true
+     );
+     mainCubit.getUserData();
 
-     if(response.redirectUrl != null) {
-       mainCubit.getUserData();
-       AxNaviagtion.goTo(path: response.redirectUrl);
-     }
    }
    
   }

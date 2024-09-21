@@ -5,8 +5,10 @@ import 'package:apex_infinity/http/response.dart';
 import 'package:apex_infinity/layout/future.layout.dart';
 import 'package:apex_infinity/navigation/navigator.dart';
 import 'package:clicks_outlet/View/widgets/input.widget.dart';
+import 'package:clicks_outlet/bloc/main.bloc.dart';
 import 'package:clicks_outlet/config/api.config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/custom_app_bar.widget.dart';
@@ -35,6 +37,9 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+
+    final MainCubit mainCubit = context.read<MainCubit>();
+
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final formKey = GlobalKey<FormState>();
     final ImagePicker _picker = ImagePicker();
@@ -149,7 +154,7 @@ class _RegisterViewState extends State<RegisterView> {
                             ? null
                             : () async {
                                 // TODO : Upload User Image
-                                final AxHttpResponse response = await Ax
+                                 await Ax
                                     .httpRequest
                                     .post(url: APIConfig.register, body: {
                                   'email_id': data['email'],
@@ -157,10 +162,10 @@ class _RegisterViewState extends State<RegisterView> {
                                   'label_name': labelName.text,
                                   'profile_picture': profileImage?.path,
                                   'auth_provider': data['auth_provider']
-                                });
-                                if (response.status) {
-                                  AxNaviagtion.goTo(path: '/home/#trendings');
-                                }
+                                },
+                                  isFollowRedirect: true
+                                );
+                                mainCubit.getUserData();
                               },
                         child: Text(isImageUploading
                             ? "Uploading image ..."
